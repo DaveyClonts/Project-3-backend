@@ -1,6 +1,5 @@
-
 import routes from "./app/routes/index.js";
-import express, { json, urlencoded } from "express"
+import express from "express"
 import cors from "cors";
 
 import db  from "./app/models/index.js";
@@ -16,7 +15,6 @@ var corsOptions = {
 }
 app.use(cors(corsOptions));
 
-
 // parse requests of content-type - application/json
 app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
@@ -24,7 +22,6 @@ app.use(express.urlencoded({ extended: true }));
   
 // Load the routes from the routes folder
 app.use("/tracker-t6", routes); 
-
 
 // set port, listen for requests
 const PORT = process.env.PORT || 3100;
