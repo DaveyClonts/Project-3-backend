@@ -283,7 +283,7 @@ async function updateGoogleToken(user) {
 async function deleteSession(token) {
     let session;
 
-    await SQLSession.findAll({ where: { token: req.body.token } })
+    await SQLSession.findAll({ where: { token: token } })
         .then((data) => {
             if (data[0] !== undefined) {
                 const sessionInfo = data[0].dataValues;
