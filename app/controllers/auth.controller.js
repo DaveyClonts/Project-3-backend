@@ -3,6 +3,7 @@ import authconfig from "../config/auth.config.js";
 import { OAuth2Client } from "google-auth-library";
 import { google } from "googleapis";
 import User from "../classes/user.js";
+import Session from "../classes/session.js";
 import jwt from "jsonwebtoken";
 import SQLUser from "../models/user.model.js";
 
