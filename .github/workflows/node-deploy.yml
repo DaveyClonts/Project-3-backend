@@ -1,5 +1,4 @@
 name: AWS DEPLOY TO STAGING
-# turn off deploy to AWS
 
 on:
   pull_request:
@@ -43,7 +42,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
           ARGS: "-rltgoDzvO --delete"
           SOURCE: "deploy/"
-          REMOTE_HOST: "tutorial.eaglesoftwareteam.com"
+          REMOTE_HOST: "project3.eaglesoftwareteam.com"
           REMOTE_USER: ubuntu
           TARGET: "nodeapps/2025/project3/t6"
       - name: Execute SSH commmands on remote server
@@ -51,7 +50,7 @@ jobs:
         env:
           NAME: "Root"
         with:
-          hosts: "ubuntu@tutorial.eaglesoftwareteam.com"
+          hosts: "ubuntu@project3.eaglesoftwareteam.com"
           privateKey: ${{ secrets.SERVER_SSH_KEY }}
           debug: false
           command: |

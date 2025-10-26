@@ -3,14 +3,14 @@ import SequelizeInstance from "../config/sequelizeInstance.js";
 
 const Tutorial = SequelizeInstance.define("tutorial", {
     title: {
-      type: Sequelize.STRING,
+        type: Sequelize.STRING,
     },
     description: {
-      type: Sequelize.STRING,
+        type: Sequelize.STRING,
     },
     published: {
-      type: Sequelize.BOOLEAN,
+        type: Sequelize.BOOLEAN,
     },
-  });
-   
+});
+
 export default Tutorial;
