@@ -3,7 +3,7 @@ import User from "../classes/user.js";
 const SQLUser = db.user;
 const Op = db.Sequelize.Op;
 
-export default userController = {
+export default {
     create: async (req, res) => {
         // Validate request
         if (!req.body.firstName) {

@@ -318,7 +318,7 @@ async function deleteSession(token) {
 /**
  * A collection of authorization functions for Google authentication: 'login', 'authorize', and 'logout.'
  */
-export default authorizer = {
+export default {
     login: async (req, res) => {
         const googleToken = req.body.credential;
         let googleUser;

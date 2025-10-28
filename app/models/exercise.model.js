@@ -1,7 +1,12 @@
-import { DataTypes } from "@sequelize/core";
+import { DataTypes } from "sequelize";
 import SequelizeInstance from "../config/sequelizeInstance.js";
 
 const SQLExercise = SequelizeInstance.define("exercise", {
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+    },
     name: {
         type: DataTypes.STRING,
     },
@@ -10,9 +15,6 @@ const SQLExercise = SequelizeInstance.define("exercise", {
     },
     description: {
         type: DataTypes.STRING,
-    },
-    userID: {
-        type: DataTypes.INTEGER
     },
 });
 

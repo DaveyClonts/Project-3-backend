@@ -1,4 +1,4 @@
-import { DataTypes } from "@sequelize/core";
+import { DataTypes } from "sequelize";
 import SequelizeInstance from "../config/sequelizeInstance.js";
 
 const SQLSession = SequelizeInstance.define("sessions", {
