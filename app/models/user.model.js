@@ -1,22 +1,22 @@
-import Sequelize from "sequelize";
+import { DataTypes } from "@sequelize/core";
 import SequelizeInstance from "../config/sequelizeInstance.js";
 
 const SQLUser = SequelizeInstance.define("user", {
     id: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
     },
     firstName: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false,
     },
     lastName: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false,
     },
     email: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false,
     },
 });
