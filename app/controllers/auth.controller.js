@@ -5,7 +5,6 @@ import { google } from "googleapis";
 import User from "../classes/user.js";
 import Session from "../classes/session.js";
 import jwt from "jsonwebtoken";
-import SQLUser from "../models/user.model.js";
 
 const SQLUser = db.user;
 const SQLSession = db.session;
