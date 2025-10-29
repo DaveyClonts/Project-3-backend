@@ -325,10 +325,16 @@ export default {
 
         await verifyToken(googleToken)
             .then((returnUser) => {
-                console.log("Successfully verified Google token.");
+                console.log(`Successfully verified Google token: ${Object.entries(returnUser)}.`);
                 googleUser = returnUser;
             })
             .catch(console.error);
+
+        if (googleUser == null)
+        {
+            console.error("Could not verify user token!");
+            return;
+        }
 
         // if we don't have their email or name, we need to make another request
         // this is solely for testing purposes

@@ -13,9 +13,9 @@ const authenticate = (req, res, next) => {
                 .then((data) => {
                     const session = data[0];
 
-                    console.log(session.expirationDate);
-
                     if (session != null) {
+                        console.log(session.expirationDate);
+
                         if (session.expirationDate >= Date.now()) {
                             next();
                             return;
