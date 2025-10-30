@@ -13,24 +13,24 @@ db.user = SQLUser;
 db.session = SQLSession;
 db.exercise = SQLExercise;
 
-// foreign key for session
 db.user.hasMany(
     db.session,
     { as: "session" },
     { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
 );
+
 db.session.belongsTo(
     db.user,
     { as: "user" },
     { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
 );
 
-// foreign key for tutorials
 db.user.hasMany(
     db.exercise,
     { as: "tutorial" },
     { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
 );
+
 db.exercise.belongsTo(
     db.user,
     { as: "user" },
