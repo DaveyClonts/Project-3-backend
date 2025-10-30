@@ -19,6 +19,11 @@ const SQLUser = SequelizeInstance.define("user", {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    role: {
+        type: DataTypes.ENUM("Athlete", "Coach", "Admin"),
+        allowNull: false,
+        defaultValue: "Athlete"
+    },
 });
 
 export default SQLUser;
