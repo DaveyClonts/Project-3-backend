@@ -1,11 +1,10 @@
 {
   "type": "module",
-  "name": "tutorial-backend",
+  "name": "project-3-backend",
   "version": "1.0.0",
-  "description": "Tutorial Node.js with Rest API",
+  "description": "Exercise Tracker",
   "main": "server.js",
   "scripts": {
-    "test": "jest --",
     "start": "node server.js",
     "bundle": "mkdir deploy && cp -r app server.js package.json package-lock.json tracker-t6-backend.service .env deploy"
   },
@@ -19,7 +18,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
-    "express": "^4.17.3",
+    "express": "^4.21.2",
     "googleapis": "^100.0.0",
     "jest": "^29.3.1",
     "jsonwebtoken": "^8.5.1",
