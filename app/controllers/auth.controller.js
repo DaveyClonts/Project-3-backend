@@ -86,7 +86,7 @@ async function findOrCreateDatabaseUser(googleUser) {
             .then((data) => {
                 const userInfo = data.dataValues;
 
-                return new User(
+                user = new User(
                     userInfo.email,
                     userInfo.firstName,
                     userInfo.lastName,
@@ -96,6 +96,8 @@ async function findOrCreateDatabaseUser(googleUser) {
             .catch((err) => {
                 throw err;
             });
+
+        return user;
     } else {
         // doing this to ensure that the user's name is the one listed with Google
         user.firstName = firstName;
@@ -112,7 +114,7 @@ async function findOrCreateDatabaseUser(googleUser) {
                         `Cannot update User with id=${user.id}. Maybe User was not found or request body was empty!`
                     );
 
-                return new User(
+                user = new User(
                     user.email,
                     user.firstName,
                     user.lastName,
@@ -123,6 +125,8 @@ async function findOrCreateDatabaseUser(googleUser) {
                 console.log(`Error updating User with id=${user.id}.`);
                 throw err;
             });
+
+        return user;
     }
 }
 
@@ -162,17 +166,20 @@ async function findUserByID(id) {
  * @returns {User} The user with an updated session token.
  */
 async function updateSessionStatus(user) {
-    let session;
+    let session = {};
+    let authenticatedUser = {};
 
     await SQLSession.findOne({
         where: {
-            email: email,
+            email: user.email,
             token: { [Op.ne]: "" },
         },
     })
         .then(async (data) => {
             if (data !== null) {
                 const sessionInfo = data.dataValues;
+                console.log(`Session data: ${JSON.stringify(data.dataValues)}`);
+
                 session = new Session(
                     sessionInfo.id,
                     sessionInfo.email,
@@ -203,7 +210,7 @@ async function updateSessionStatus(user) {
                         "Found a session, don't need to make another one."
                     );
 
-                    return User(
+                    authenticatedUser = new User(
                         user.email,
                         user.firstName,
                         user.lastName,
@@ -211,7 +218,10 @@ async function updateSessionStatus(user) {
                         session.token
                     );
                 }
-            }
+            } else
+                console.log(
+                    `Could not find session for user ${user.firstName}.`
+                );
         })
         .catch((err) => {
             throw new Error(
@@ -219,24 +229,26 @@ async function updateSessionStatus(user) {
             );
         });
 
+    if (authenticatedUser.sessionToken !== undefined) return authenticatedUser;
+
     if (session.id !== undefined) return;
 
     // create a new Session with an expiration date and save to database
-    let token = jwt.sign({ id: email }, authconfig.secret, {
+    let token = jwt.sign({ id: user.email }, authconfig.secret, {
         expiresIn: 86400,
     });
 
     let tempExpirationDate = new Date();
     tempExpirationDate.setDate(tempExpirationDate.getDate() + 1);
 
-    session = new Session(user.id, email, token, tempExpirationDate);
+    session = new Session(user.id, user.email, token, tempExpirationDate);
 
     console.log("Making a new session.");
     console.log(session);
 
     await SQLSession.create(session)
         .then(() => {
-            return new User(
+            authenticatedUser = new User(
                 user.email,
                 user.firstName,
                 user.lastName,
@@ -247,6 +259,8 @@ async function updateSessionStatus(user) {
         .catch((err) => {
             throw err;
         });
+
+    return authenticatedUser;
 }
 
 /**
@@ -325,13 +339,16 @@ export default {
 
         await verifyToken(googleToken)
             .then((returnUser) => {
-                console.log(`Successfully verified Google token: ${Object.entries(returnUser)}.`);
+                console.log(
+                    `Successfully verified Google token: ${Object.entries(
+                        returnUser
+                    )}.`
+                );
                 googleUser = returnUser;
             })
             .catch(console.error);
 
-        if (googleUser == null)
-        {
+        if (googleUser == null) {
             console.error("Could not verify user token!");
             return;
         }
@@ -347,9 +364,11 @@ export default {
             })
             .catch((err) => res.status(500).send({ message: err.message }));
 
+        console.log(`User: ${JSON.stringify(googleUser)}`);
+
         updateSessionStatus(googleUser)
             .then((userData) => {
-                console.log(`Successfully received user data: ${userData}.`);
+                console.log(`Successfully received user data: ${JSON.stringify(userData)}.`);
                 res.status(200).send(userData);
             })
             .catch((err) => {
