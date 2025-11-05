@@ -4,7 +4,7 @@ import { Router } from "express";
 var router = Router();
 
 // Create a new User
-router.post("/", users.create);
+router.post("/", [authenticate], users.create);
 
 // Retrieve all Users
 router.get("/", [authenticate], users.findAll);
