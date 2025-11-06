@@ -54,7 +54,7 @@ async function getUserForAccessToken(accessToken) {
  * @returns {Promise<User>} The valid database user.
  */
 async function findOrCreateDatabaseUser(googleUser) {
-    let user;
+    let user = {};
 
     const email = googleUser.email;
     const firstName = googleUser.firstName;
@@ -86,7 +86,7 @@ async function findOrCreateDatabaseUser(googleUser) {
             .then((data) => {
                 const userInfo = data.dataValues;
 
-                user = new User(
+                return new User(
                     userInfo.email,
                     userInfo.firstName,
                     userInfo.lastName,
@@ -96,8 +96,6 @@ async function findOrCreateDatabaseUser(googleUser) {
             .catch((err) => {
                 throw err;
             });
-
-        return user;
     } else {
         // doing this to ensure that the user's name is the one listed with Google
         user.firstName = firstName;
@@ -114,7 +112,7 @@ async function findOrCreateDatabaseUser(googleUser) {
                         `Cannot update User with id=${user.id}. Maybe User was not found or request body was empty!`
                     );
 
-                user = new User(
+                return new User(
                     user.email,
                     user.firstName,
                     user.lastName,
@@ -125,8 +123,6 @@ async function findOrCreateDatabaseUser(googleUser) {
                 console.log(`Error updating User with id=${user.id}.`);
                 throw err;
             });
-
-        return user;
     }
 }
 
@@ -136,6 +132,7 @@ async function findOrCreateDatabaseUser(googleUser) {
  * @returns {Promise<User>} The found user.
  */
 async function findUserByID(id) {
+    let user = {};
     console.log(`Finding User by id=${req.params.id}.`);
 
     await SQLUser.findOne({
@@ -147,7 +144,7 @@ async function findUserByID(id) {
             if (data != null) {
                 const userInfo = data.dataValues;
 
-                return new User(
+                user = new User(
                     userInfo.email,
                     userInfo.firstName,
                     userInfo.lastName,
@@ -158,6 +155,8 @@ async function findUserByID(id) {
         .catch((err) => {
             throw err;
         });
+
+    return user;
 }
 
 /**
@@ -166,20 +165,27 @@ async function findUserByID(id) {
  * @returns {User} The user with an updated session token.
  */
 async function updateSessionStatus(user) {
+<<<<<<< Updated upstream
+    let session;
+=======
     let session = {};
     let authenticatedUser = {};
+<<<<<<< Updated upstream
+=======
+
+    console.log(`Updating user: ${JSON.stringify(user)}`);
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 
     await SQLSession.findOne({
         where: {
-            email: user.email,
+            email: email,
             token: { [Op.ne]: "" },
         },
     })
         .then(async (data) => {
             if (data !== null) {
                 const sessionInfo = data.dataValues;
-                console.log(`Session data: ${JSON.stringify(data.dataValues)}`);
-
                 session = new Session(
                     sessionInfo.id,
                     sessionInfo.email,
@@ -210,7 +216,7 @@ async function updateSessionStatus(user) {
                         "Found a session, don't need to make another one."
                     );
 
-                    authenticatedUser = new User(
+                    return User(
                         user.email,
                         user.firstName,
                         user.lastName,
@@ -218,10 +224,7 @@ async function updateSessionStatus(user) {
                         session.token
                     );
                 }
-            } else
-                console.log(
-                    `Could not find session for user ${user.firstName}.`
-                );
+            }
         })
         .catch((err) => {
             throw new Error(
@@ -229,26 +232,33 @@ async function updateSessionStatus(user) {
             );
         });
 
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
     if (authenticatedUser.sessionToken !== undefined) return authenticatedUser;
+=======
+    if (authenticatedUser.firstName !== undefined) return authenticatedUser;
+>>>>>>> Stashed changes
 
+>>>>>>> Stashed changes
     if (session.id !== undefined) return;
 
     // create a new Session with an expiration date and save to database
-    let token = jwt.sign({ id: user.email }, authconfig.secret, {
+    let token = jwt.sign({ id: email }, authconfig.secret, {
         expiresIn: 86400,
     });
 
     let tempExpirationDate = new Date();
     tempExpirationDate.setDate(tempExpirationDate.getDate() + 1);
 
-    session = new Session(user.id, user.email, token, tempExpirationDate);
+    session = new Session(user.id, email, token, tempExpirationDate);
 
     console.log("Making a new session.");
     console.log(session);
 
     await SQLSession.create(session)
         .then(() => {
-            authenticatedUser = new User(
+            return new User(
                 user.email,
                 user.firstName,
                 user.lastName,
@@ -259,8 +269,15 @@ async function updateSessionStatus(user) {
         .catch((err) => {
             throw err;
         });
+<<<<<<< Updated upstream
+=======
 
+<<<<<<< Updated upstream
+=======
+    console.log("returning user: " + JSON.stringify(authenticatedUser));
+>>>>>>> Stashed changes
     return authenticatedUser;
+>>>>>>> Stashed changes
 }
 
 /**
@@ -339,16 +356,13 @@ export default {
 
         await verifyToken(googleToken)
             .then((returnUser) => {
-                console.log(
-                    `Successfully verified Google token: ${Object.entries(
-                        returnUser
-                    )}.`
-                );
+                console.log(`Successfully verified Google token: ${Object.entries(returnUser)}.`);
                 googleUser = returnUser;
             })
             .catch(console.error);
 
-        if (googleUser == null) {
+        if (googleUser == null)
+        {
             console.error("Could not verify user token!");
             return;
         }
@@ -362,13 +376,32 @@ export default {
             .then((user) => {
                 googleUser = user;
             })
-            .catch((err) => res.status(500).send({ message: err.message }));
+            .catch((err) => {
+                console.log(`Error while retrieving database user: ${err}.`);
+                res.status(500).send({ message: err.message });
+            });
 
+<<<<<<< Updated upstream
+        updateSessionStatus(googleUser)
+            .then((userData) => {
+                console.log(`Successfully received user data: ${userData}.`);
+=======
+<<<<<<< Updated upstream
         console.log(`User: ${JSON.stringify(googleUser)}`);
 
         updateSessionStatus(googleUser)
             .then((userData) => {
                 console.log(`Successfully received user data: ${JSON.stringify(userData)}.`);
+=======
+        await updateSessionStatus(googleUser)
+            .then((userData) => {
+                console.log(
+                    `Successfully received user data: ${JSON.stringify(
+                        userData
+                    )}.`
+                );
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
                 res.status(200).send(userData);
             })
             .catch((err) => {
