@@ -179,8 +179,9 @@ async function updateSessionStatus(user) {
         .then(async (data) => {
             if (data !== null) {
                 const sessionInfo = data.dataValues;
+                
                 session = new Session(
-                    sessionInfo.id,
+                    sessionInfo.userID,
                     sessionInfo.email,
                     sessionInfo.token,
                     sessionInfo.expirationDate
