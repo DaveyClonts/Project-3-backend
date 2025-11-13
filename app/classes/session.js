@@ -1,6 +1,6 @@
 export default class Session {
-    constructor(id, email, token, expirationDate) {
-        this.id = id;
+    constructor(userID, email, token, expirationDate) {
+        this.userID = userID;
         this.email = email;
         this.token = token;
         this.expirationDate = expirationDate;
