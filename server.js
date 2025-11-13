@@ -1,4 +1,4 @@
-import routes from "./app/routes/index.js";
+import router from "./app/routes/index.js";
 import express from "express";
 import cors from "cors";
 import db from "./app/models/index.js";
@@ -10,12 +10,12 @@ var corsOptions = {
     origin: "http://localhost:8081",
     credentials: true,
 };
-app.use(cors(corsOptions));
 
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/tracker-t6", routes);
+app.use("/tracker-t6", router);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 3100;

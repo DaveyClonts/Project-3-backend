@@ -135,7 +135,7 @@ async function findOrCreateDatabaseUser(googleUser) {
  */
 async function findUserByID(id) {
     let user = {};
-    console.log(`Finding User by id=${req.params.id}.`);
+    console.log(`Finding User by id=${id}.`);
 
     await SQLUser.findOne({
         where: {
@@ -179,7 +179,7 @@ async function updateSessionStatus(user) {
         .then(async (data) => {
             if (data !== null) {
                 const sessionInfo = data.dataValues;
-                
+
                 session = new Session(
                     sessionInfo.userID,
                     sessionInfo.email,
@@ -266,8 +266,6 @@ async function updateSessionStatus(user) {
  * @returns {object} POJO with token info to send in the response.
  */
 async function updateGoogleToken(user) {
-    let token;
-
     await SQLUser.update(user, { where: { id: user.id } })
         .then((num) => {
             if (num == 1) console.log("Updated User's Google token.");
@@ -275,19 +273,10 @@ async function updateGoogleToken(user) {
                 console.log(
                     `Cannot update User with id=${user.id}. Maybe User was not found or req.body is empty!`
                 );
-
-            let tokenInfo = {
-                refresh_token: tokens.refresh_token,
-                expiration_date: tempExpirationDate,
-            };
-
-            token = tokenInfo;
         })
         .catch((err) => {
             throw err;
         });
-
-    return token;
 }
 
 /**
@@ -389,35 +378,20 @@ export default {
             });
     },
     authorize: async (req, res) => {
-        console.log("Authorizing client.");
-        const oauth2Client = new google.auth.OAuth2(
-            process.env.CLIENT_ID,
-            process.env.CLIENT_SECRET,
-            "postmessage"
-        );
-
-        console.log("Authorizing token.");
-        // Get access and refresh tokens (if access_type is offline)
-        let { tokens } = await oauth2Client.getToken(req.body.code);
-        oauth2Client.setCredentials(tokens);
-
         let user;
-        await findUserByID(req.params.id)
+
+        await findUserByID(req.body.id)
             .then((googleUser) => (user = googleUser))
-            .catch((err) =>
-                console.log(`Failed to find User: ${err.message}.`)
-            );
+            .catch((err) => {
+                console.log(`Failed to find User: ${err.message}.`);
+                res.status(500).send(`Failed to find User: ${err.message}.`);
+            });
 
-        let tempExpirationDate = new Date();
-        tempExpirationDate.setDate(tempExpirationDate.getDate() + 100);
-
-        console.log(tokens);
-        console.log(oauth2Client);
+        if (user == null) return;
 
         await updateGoogleToken(user)
-            .then((tokenInfo) => {
-                console.log(tokenInfo);
-                res.status(200).send(tokenInfo);
+            .then(() => {
+                res.status(200).send({});
             })
             .catch((err) => {
                 console.log(
