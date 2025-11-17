@@ -184,7 +184,8 @@ async function updateSessionStatus(user) {
                     sessionInfo.userID,
                     sessionInfo.email,
                     sessionInfo.token,
-                    sessionInfo.expirationDate
+                    sessionInfo.expirationDate,
+                    sessionInfo.id
                 );
 
                 if (session.expirationDate < Date.now()) {
