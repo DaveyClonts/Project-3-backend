@@ -9,6 +9,8 @@ const router = Router();
 
 router.use((req, res, next) => {
     res.setHeader("Cross-Origin-Opener-Policy", "unsafe-none");
+    console.log("router received request " + req.url);
+
     next();
 });
 

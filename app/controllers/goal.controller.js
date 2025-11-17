@@ -53,17 +53,24 @@ export default {
     findAllForUser: async (req, res) => {
         const userId = req.params.userId;
         
+        console.log("Finding goals for user: " + req.params.userId);
+
         SQLGoal.findAll({ where: { userId: userId } })
             .then((data) => {
                 if (data) {
-                    res.send(data);
+                    console.log("Found goals");
+                    res.status(200).send(data);
+                    return;
                 } else {
+                    console.log("Could not find goals for user");
                     res.status(404).send({
                         message: `Cannot find Goals for user with id=${userId}.`,
                     });
+                    return;
                 }
             })
             .catch((err) => {
+                console.log("Error retrieving goals: " + err.message);
                 res.status(500).send({
                     message:
                         err.message ||

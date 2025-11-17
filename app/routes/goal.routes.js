@@ -10,7 +10,7 @@ router.post("/", [authenticate], goal.create);
 router.get("/", [authenticate], goal.findAll);
 
 // Retrieve all Goal for user
-router.get("/userGoal/:userId", [authenticate], goal.findAllForUser);
+router.get("/:userId", [authenticate], goal.findAllForUser);
 
 // Retrieve a single Goal with id
 router.get("/:id", [authenticate], goal.findOne);

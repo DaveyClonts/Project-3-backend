@@ -244,6 +244,8 @@ async function updateSessionStatus(user) {
     console.log("Making a new session.");
     console.log(session);
 
+    console.log("Creating session with token: " + token);
+
     await SQLSession.create(session)
         .then(() => {
             authenticatedUser = new User(
