@@ -35,8 +35,8 @@ export default {
             });
     },
     findAll: async (req, res) => {
-        const title = req.query.title;
-        var condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
+        const name = req.query.name;
+        var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
         
         SQLGoal.findAll({ where: condition })
             .then((data) => {
@@ -103,7 +103,7 @@ export default {
         const id = req.params.id;
 
         SQLGoal.update(req.body, {
-            where: { id: id },
+            where: { goalID: id },
         })
             .then((num) => {
                 if (num == 1) {
@@ -127,7 +127,7 @@ export default {
         const id = req.params.id;
 
         SQLGoal.destroy({
-            where: { id: id },
+            where: { goalID: id },
         })
             .then((num) => {
                 if (num == 1) {

@@ -8,14 +8,13 @@ import GoalRoutes from "./goal.routes.js";
 const router = Router();
 
 router.use((req, res, next) => {
-    res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
-    res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+    res.setHeader("Cross-Origin-Opener-Policy", "unsafe-none");
     next();
 });
 
 router.use("/", AuthRoutes);
 router.use("/users", UserRoutes);
 router.use("/exercises", ExerciseRoutes);
-router.use("/goal", GoalRoutes);
+router.use("/goals", GoalRoutes);
 
 export default router;
