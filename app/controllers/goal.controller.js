@@ -7,19 +7,19 @@ const Op = db.Sequelize.Op;
 export default {
     create: async (req, res) => {
         // Validate request
-        if (!req.body.title) {
+        if (!req.body.name) {
             res.status(400).send({
                 message: "Content can not be empty!",
             });
             return;
         }
 
-        const goal = new Goal(
-            req.body.name,
-            req.body.description ? req.body.description : "",
-            req.body.date,
-            req.body.userID,
-        );
+        const goal = {
+            name: req.body.name,
+            description: req.body.description ? req.body.description : "",
+            date: req.body.date,
+            userID: req.body.userID,
+        };
 
         // Save Goal in the database
         SQLGoal.create(goal)
@@ -51,11 +51,11 @@ export default {
             });
     },
     findAllForUser: async (req, res) => {
-        const userId = req.params.userId;
+        const userID = req.params.userID;
         
-        console.log("Finding goals for user: " + req.params.userId);
+        console.log("Finding goals for user: " + req.params.userID);
 
-        SQLGoal.findAll({ where: { userID: userId } })
+        SQLGoal.findAll({ where: { userID: userID } })
             .then((data) => {
                 if (data) {
                     console.log("Found goals");
@@ -64,7 +64,7 @@ export default {
                 } else {
                     console.log("Could not find goals for user");
                     res.status(404).send({
-                        message: `Cannot find Goals for user with id=${userId}.`,
+                        message: `Cannot find Goals for user with id=${userID}.`,
                     });
                     return;
                 }
@@ -74,7 +74,7 @@ export default {
                 res.status(500).send({
                     message:
                         err.message ||
-                        "Error retrieving Goals for user with id=" + userId,
+                        "Error retrieving Goals for user with id=" + userID,
                 });
             });
     },

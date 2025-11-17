@@ -17,38 +17,42 @@ db.goal = SQLGoal;
 
 // foreign key for session
 db.user.hasMany(
-    db.session,
-    { as: "session" },
-    { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
+  db.session,
+  { as: "session" },
+  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
 );
 db.session.belongsTo(
-    db.user,
-    { as: "user" },
-    { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
+  db.user,
+  { as: "user" },
+  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
 );
 
 // foreign key for tutorials
 db.user.hasMany(
-    db.exercise,
-    { as: "tutorial" },
-    { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
+  db.exercise,
+  { as: "tutorial" },
+  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
 );
 db.exercise.belongsTo(
-    db.user,
-    { as: "user" },
-    { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
+  db.user,
+  { as: "user" },
+  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
 );
 
 // foreign key for goals
-db.user.hasMany(
-    db.goal,
-    { as: "goal" },
-    { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
-);
-db.goal.belongsTo(
-    db.user,
-    { as: "user" },
-    { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
-);
+db.user.hasMany(db.goal, {
+  as: "goals",
+  foreignKey: "userID",
+  allowNull: false,
+  onDelete: "CASCADE",
+});
+
+// Goal → User
+db.goal.belongsTo(db.user, {
+  as: "user",
+  foreignKey: "userID",
+  allowNull: false,
+  onDelete: "CASCADE",
+});
 
 export default db;
