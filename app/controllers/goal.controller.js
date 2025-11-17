@@ -55,7 +55,7 @@ export default {
         
         console.log("Finding goals for user: " + req.params.userId);
 
-        SQLGoal.findAll({ where: { userId: userId } })
+        SQLGoal.findAll({ where: { userID: userId } })
             .then((data) => {
                 if (data) {
                     console.log("Found goals");
