@@ -184,7 +184,8 @@ async function updateSessionStatus(user) {
                     sessionInfo.userID,
                     sessionInfo.email,
                     sessionInfo.token,
-                    sessionInfo.expirationDate
+                    sessionInfo.expirationDate,
+                    sessionInfo.id
                 );
 
                 if (session.expirationDate < Date.now()) {
@@ -242,6 +243,8 @@ async function updateSessionStatus(user) {
 
     console.log("Making a new session.");
     console.log(session);
+
+    console.log("Creating session with token: " + token);
 
     await SQLSession.create(session)
         .then(() => {

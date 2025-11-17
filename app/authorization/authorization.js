@@ -4,13 +4,20 @@ const Session = db.session;
 const authenticate = (req, res, next) => {
     let token = null;
 
+    console.log("Authenticating");
+
     const authHeader = req.get("authorization");
+
+    console.log("header: " + authHeader);
+
     if (authHeader != null) {
         if (authHeader.startsWith("Bearer ")) {
             token = authHeader.slice(7);
+            console.log("Finding session with token: " + token);
 
             Session.findAll({ where: { token: token } })
                 .then((data) => {
+                    console.log("Return data: " + JSON.stringify(data));
                     const session = data[0];
 
                     if (session != null) {
@@ -24,13 +31,21 @@ const authenticate = (req, res, next) => {
                                 message:
                                     "Unauthorized! Expired Token, Logout and Login again",
                             });
+                    } else {
+                        console.log("Could not find session.");
+                        res.status(401).send({
+                            message:
+                                "Unauthorized! Could not find valid session.",
+                        });
                     }
                 })
                 .catch((err) => {
                     console.log(err.message);
+                    res.status(500).send("Error with authorization: " + err);
                 });
         }
     } else {
+        console.log("Unauthorized! No Auth Header.");
         return res.status(401).send({
             message: "Unauthorized! No Auth Header.",
         });
