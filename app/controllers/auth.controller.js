@@ -54,7 +54,7 @@ async function getUserForAccessToken(accessToken) {
  * @returns {Promise<User>} The valid database user.
  */
 async function findOrCreateDatabaseUser(googleUser) {
-    let user;
+    let user = {};
 
     const email = googleUser.email;
     const firstName = googleUser.firstName;
@@ -134,7 +134,8 @@ async function findOrCreateDatabaseUser(googleUser) {
  * @returns {Promise<User>} The found user.
  */
 async function findUserByID(id) {
-    console.log(`Finding User by id=${req.params.id}.`);
+    let user = {};
+    console.log(`Finding User by id=${id}.`);
 
     await SQLUser.findOne({
         where: {
@@ -145,7 +146,7 @@ async function findUserByID(id) {
             if (data != null) {
                 const userInfo = data.dataValues;
 
-                return new User(
+                user = new User(
                     userInfo.email,
                     userInfo.firstName,
                     userInfo.lastName,
@@ -156,6 +157,8 @@ async function findUserByID(id) {
         .catch((err) => {
             throw err;
         });
+
+    return user;
 }
 
 /**
@@ -167,8 +170,6 @@ async function updateSessionStatus(user) {
     let session = {};
     let authenticatedUser = {};
 
-    console.log("user: " + JSON.stringify(user));
-
     await SQLSession.findOne({
         where: {
             email: user.email,
@@ -178,11 +179,13 @@ async function updateSessionStatus(user) {
         .then(async (data) => {
             if (data !== null) {
                 const sessionInfo = data.dataValues;
+
                 session = new Session(
-                    sessionInfo.id,
+                    sessionInfo.userID,
                     sessionInfo.email,
                     sessionInfo.token,
-                    sessionInfo.expirationDate
+                    sessionInfo.expirationDate,
+                    sessionInfo.id
                 );
 
                 if (session.expirationDate < Date.now()) {
@@ -224,7 +227,8 @@ async function updateSessionStatus(user) {
             );
         });
 
-    if (authenticatedUser.sessionToken !== undefined) return authenticatedUser;
+    if (authenticatedUser.firstName !== undefined) return authenticatedUser;
+
     if (session.id !== undefined) return;
 
     // create a new Session with an expiration date and save to database
@@ -240,6 +244,8 @@ async function updateSessionStatus(user) {
     console.log("Making a new session.");
     console.log(session);
 
+    console.log("Creating session with token: " + token);
+
     await SQLSession.create(session)
         .then(() => {
             authenticatedUser = new User(
@@ -254,7 +260,6 @@ async function updateSessionStatus(user) {
             throw err;
         });
 
-    console.log("returning user: " + JSON.stringify(authenticatedUser));
     return authenticatedUser;
 }
 
@@ -271,13 +276,6 @@ async function updateGoogleToken(user) {
                 console.log(
                     `Cannot update User with id=${user.id}. Maybe User was not found or req.body is empty!`
                 );
-
-            let tokenInfo = {
-                refresh_token: tokens.refresh_token,
-                expiration_date: tempExpirationDate,
-            };
-
-            return tokenInfo;
         })
         .catch((err) => {
             throw err;
@@ -289,7 +287,7 @@ async function updateGoogleToken(user) {
  * @param {string} token
  */
 async function deleteSession(token) {
-    let session;
+    let session = {};
 
     await SQLSession.findAll({ where: { token: token } })
         .then((data) => {
@@ -345,6 +343,7 @@ export default {
 
         if (googleUser == null) {
             console.error("Could not verify user token!");
+            res.status(500).send({ message: "Could not verify user token!" });
             return;
         }
 
@@ -357,7 +356,10 @@ export default {
             .then((user) => {
                 googleUser = user;
             })
-            .catch((err) => res.status(500).send({ message: err.message }));
+            .catch((err) => {
+                console.log(`Error while retrieving database user: ${err}.`);
+                res.status(500).send({ message: err.message });
+            });
 
         await updateSessionStatus(googleUser)
             .then((userData) => {
@@ -379,35 +381,20 @@ export default {
             });
     },
     authorize: async (req, res) => {
-        console.log("Authorizing client.");
-        const oauth2Client = new google.auth.OAuth2(
-            process.env.CLIENT_ID,
-            process.env.CLIENT_SECRET,
-            "postmessage"
-        );
-
-        console.log("Authorizing token.");
-        // Get access and refresh tokens (if access_type is offline)
-        let { tokens } = await oauth2Client.getToken(req.body.code);
-        oauth2Client.setCredentials(tokens);
-
         let user;
-        await findUserByID(req.params.id)
+
+        await findUserByID(req.body.id)
             .then((googleUser) => (user = googleUser))
-            .catch((err) =>
-                console.log(`Failed to find User: ${err.message}.`)
-            );
+            .catch((err) => {
+                console.log(`Failed to find User: ${err.message}.`);
+                res.status(500).send(`Failed to find User: ${err.message}.`);
+            });
 
-        let tempExpirationDate = new Date();
-        tempExpirationDate.setDate(tempExpirationDate.getDate() + 100);
-
-        console.log(tokens);
-        console.log(oauth2Client);
+        if (user == null) return;
 
         await updateGoogleToken(user)
-            .then((tokenInfo) => {
-                console.log(tokenInfo);
-                res.status(200).send(tokenInfo);
+            .then(() => {
+                res.status(200).send({});
             })
             .catch((err) => {
                 console.log(
@@ -417,18 +404,24 @@ export default {
             });
     },
     logout: async (req, res) => {
-        console.log(req.body);
-        if (req.body === null) {
-            res.send({
+        console.log(`Logout request body: ${JSON.stringify(req.body)}.`);
+        if (req.body === null || req.body.credential === undefined) {
+            res.status(200).send({
                 message: "User has already been successfully logged out!",
             });
             return;
         }
 
-        await deleteSession(req.body.token)
-            .then(() => console.log("Successfully logged out."))
+        await deleteSession(req.body.credential)
+            .then(() => {
+                console.log("Successfully logged out.");
+                res.status(200).send({ message: "Successfully logged out." });
+            })
             .catch((err) => {
                 console.log(`Error logging out: ${err.message}.`);
+                res.status(500).send({
+                    message: `Error logging out: ${err.message}.`,
+                });
             });
     },
 };
