@@ -55,7 +55,10 @@ export default {
         
         console.log("Finding goals for user: " + req.params.userID);
 
-        SQLGoal.findAll({ where: { userID: userID } })
+        SQLGoal.findAll({ 
+                where: { userID: userID },
+                order: [['date', 'ASC']]
+            })
             .then((data) => {
                 if (data) {
                     console.log("Found goals");
