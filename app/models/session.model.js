@@ -2,7 +2,7 @@ import { DataTypes } from "sequelize";
 import SequelizeInstance from "../config/sequelizeInstance.js";
 
 const SQLSession = SequelizeInstance.define(
-    "sessions",
+    "session",
     {
         id: {
             type: DataTypes.INTEGER,

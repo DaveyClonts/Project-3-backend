@@ -2,7 +2,7 @@ import { DataTypes } from "sequelize";
 import SequelizeInstance from "../config/sequelizeInstance.js";
 
 const SQLWorkout = SequelizeInstance.define(
-    "exercise",
+    "workout",
     {
         id: {
             type: DataTypes.INTEGER,
@@ -11,12 +11,10 @@ const SQLWorkout = SequelizeInstance.define(
         },
         name: {
             type: DataTypes.STRING,
+            allowNull: false,
         },
-        type: {
-            type: DataTypes.ENUM("cardio, weights"),
-        },
-        description: {
-            type: DataTypes.STRING,
+        date: {
+            type: DataTypes.DATE,
         },
     },
     {
