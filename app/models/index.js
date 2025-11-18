@@ -49,15 +49,19 @@ db.exercise.belongsTo(db.user, {
 
 db.user.hasMany(db.goal, {
     as: "goals",
-    foreignKey: "userID",
-    allowNull: false,
+    foreignKey: {
+        name: "userID",
+        allowNull: false,
+    },
     onDelete: "CASCADE",
 });
 
 db.goal.belongsTo(db.user, {
     as: "user",
-    foreignKey: "userID",
-    allowNull: false,
+    foreignKey: {
+        name: "userID",
+        allowNull: false,
+    },
     onDelete: "CASCADE",
 });
 
