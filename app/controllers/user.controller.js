@@ -17,7 +17,8 @@ export default {
             req.body.email,
             req.body.firstName,
             req.body.lastName,
-            req.body.id
+            req.body.id,
+            req.body.role
         );
 
         // Save User in the database
@@ -59,7 +60,8 @@ export default {
                         data.email,
                         data.firstName,
                         data.lastName,
-                        data.id
+                        data.id,
+                        data.role
                     );
 
                     res.send(user);
@@ -88,7 +90,8 @@ export default {
                         data.email,
                         data.firstName,
                         data.lastName,
-                        data.id
+                        data.id,
+                        data.role
                     );
 
                     res.send(user);
