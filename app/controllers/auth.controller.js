@@ -172,7 +172,7 @@ async function updateSessionStatus(user) {
 
     await SQLSession.findOne({
         where: {
-            email: user.email,
+            userID: user.id,
             token: { [Op.ne]: "" },
         },
     })
@@ -242,8 +242,6 @@ async function updateSessionStatus(user) {
 
     console.log("Making a new session.");
     console.log(session);
-
-    console.log("Creating session with token: " + token);
 
     await SQLSession.create(session)
         .then(() => {
