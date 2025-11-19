@@ -20,6 +20,13 @@ const SQLWorkoutExercise = SequelizeInstance.define(
                 key: "id",
             },
         },
+        reps: {
+            type: DataTypes.INTEGER,
+            defaultvalue: 0,
+            validate: {
+                min: 0,
+            },
+        },
         sets: {
             type: DataTypes.INTEGER,
             defaultValue: 0,
@@ -36,6 +43,13 @@ const SQLWorkoutExercise = SequelizeInstance.define(
         },
         miles: {
             type: DataTypes.FLOAT,
+            defaultValue: 0,
+            validate: {
+                min: 0,
+            },
+        },
+        time: {
+            type: DataTypes.INTEGER,
             defaultValue: 0,
             validate: {
                 min: 0,
