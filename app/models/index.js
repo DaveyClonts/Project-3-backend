@@ -5,6 +5,7 @@ import SQLUser from "./user.model.js";
 import SQLSession from "./session.model.js";
 import SQLExercise from "./exercise.model.js";
 import SQLGoal from "./goal.model.js";
+import SQLNote from "./note.model.js";
 
 const db = {};
 db.Sequelize = Sequelize;
@@ -14,6 +15,7 @@ db.user = SQLUser;
 db.session = SQLSession;
 db.exercise = SQLExercise;
 db.goal = SQLGoal;
+db.note = SQLNote;
 
 // foreign key for session
 db.user.hasMany(
@@ -46,11 +48,25 @@ db.user.hasMany(db.goal, {
   allowNull: false,
   onDelete: "CASCADE",
 });
-
 // Goal → User
 db.goal.belongsTo(db.user, {
   as: "user",
   foreignKey: "userID",
+  allowNull: false,
+  onDelete: "CASCADE",
+});
+
+// foreign key for note
+db.goal.hasMany(db.note, {
+  as: "notes",
+  foreignKey: "goalID",
+  allowNull: false,
+  onDelete: "CASCADE",
+});
+// note → goal
+db.note.belongsTo(db.goal, {
+  as: "goal",
+  foreignKey: "goalID",
   allowNull: false,
   onDelete: "CASCADE",
 });
