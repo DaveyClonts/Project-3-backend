@@ -7,7 +7,6 @@ import SQLExercise from "./exercise.model.js";
 import SQLWorkout from "./workout.model.js";
 import SQLWorkoutExercise from "./workoutExercise.model.js";
 import SQLGoal from "./goal.model.js";
-import SQLCoachAthlete from "./coachAthlete.model.js";
 
 const db = {};
 db.Sequelize = Sequelize;
