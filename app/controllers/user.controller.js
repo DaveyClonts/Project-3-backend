@@ -118,22 +118,29 @@ export default {
     update: async (req, res) => {
         const id = req.params.id;
 
+        console.log(`Updating user: ${id}.`);
+
         SQLUser.update(req.body, {
             where: { id: id },
         })
             .then((num) => {
-                if (num == 1)
+                if (num == 1) {
+                    console.log("User was updated successfully.");
+
                     res.send({
                         message: "User was updated successfully.",
                     });
-                else
+                } else {
+                    console.log("Cannot update user.");
+
                     res.send({
                         message: `Cannot update User with id=${id}. Maybe User was not found or req.body is empty!`,
                     });
+                }
             })
             .catch((err) => {
                 res.status(500).send({
-                    message: `Error updating User with id=${id}.`,
+                    message: `Error updating User with id=${id}: ${err}`,
                 });
             });
     },
