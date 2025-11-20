@@ -107,22 +107,6 @@ db.workoutExercise.hasOne(db.exercise, {
   onDelete: "CASCADE",
 })
 
-
-// foreign key for goals
-db.user.hasMany(db.goal, {
-  as: "goals",
-  foreignKey: "userID",
-  allowNull: false,
-  onDelete: "CASCADE",
-});
-// Goal → User
-db.goal.belongsTo(db.user, {
-  as: "user",
-  foreignKey: "userID",
-  allowNull: false,
-  onDelete: "CASCADE",
-});
-
 // foreign key for note
 db.goal.hasMany(db.note, {
   as: "notes",
@@ -132,7 +116,7 @@ db.goal.hasMany(db.note, {
 });
 // note → goal
 db.note.belongsTo(db.goal, {
-  as: "goal",
+  as: "goalNote",
   foreignKey: "goalID",
   allowNull: false,
   onDelete: "CASCADE",
