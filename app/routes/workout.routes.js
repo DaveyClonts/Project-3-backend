@@ -13,7 +13,7 @@ router.get("/coachWorkouts/:coachID", [authenticate], workouts.findAllForCoach);
 router.get("/athleteWorkouts/:athleteID", [authenticate], workouts.findAllForAthlete);
 
 // Retrieve all Workouts for athlete and coach
-router.get("/coachAthleteWorkouts/", [authenticate], workouts.findAllForCoachAndAthlete);
+router.get("/coachAthleteWorkouts/:coachID/:athleteID", [authenticate], workouts.findAllForCoachAndAthlete);
 
 // Retrieve a single Workout with id
 router.get("/:id", [authenticate], workouts.findOne);

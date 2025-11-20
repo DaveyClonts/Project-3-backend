@@ -23,7 +23,7 @@ export default {
         // Save Exercise in the database
         SQLWorkout.create(workout)
             .then((data) => {
-                res.send(data);
+                res.status(200).send(data);
             })
             .catch((err) => {
                 res.status(500).send({
@@ -86,8 +86,11 @@ export default {
             });
     },
     findAllForCoachAndAthlete: async (req, res) => {
-        const coachID = req.body.coachID;
-        const athleteID = req.body.athleteID;
+        const coachID = req.params.coachID;
+        const athleteID = req.params.athleteID;
+        console.log("request params: " + JSON.stringify(req.params));
+
+        console.log(`Finding workouts for coach=${coachID} and athlete=${athleteID}`);
 
         SQLWorkout.findAll({
             include: [
