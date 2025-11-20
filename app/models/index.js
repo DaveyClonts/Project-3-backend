@@ -20,49 +20,127 @@ db.workoutExercise = SQLWorkoutExercise;
 db.goal = SQLGoal;
 
 db.user.hasMany(db.session, {
-    foreignKey: {
-        name: "userID",
-        allowNull: false,
-    },
-    onDelete: "CASCADE",
+  foreignKey: {
+    name: "userID",
+    allowNull: false,
+  },
+  onDelete: "CASCADE",
 });
 db.session.belongsTo(db.user, {
-    foreignKey: {
-        name: "userID",
-        allowNull: false,
-    },
+  foreignKey: {
+    name: "userID",
+    allowNull: false,
+  },
 });
 
 db.user.hasMany(db.exercise, {
-    foreignKey: {
-        name: "coachID",
-        allowNull: false,
-    },
-    onDelete: "CASCADE",
+  foreignKey: {
+    name: "coachID",
+    allowNull: false,
+  },
+  onDelete: "CASCADE",
 });
 db.exercise.belongsTo(db.user, {
-    foreignKey: {
-        name: "coachID",
-        allowNull: false,
-    },
+  foreignKey: {
+    name: "coachID",
+    allowNull: false,
+  },
 });
 
 db.user.hasMany(db.goal, {
-    as: "goals",
-    foreignKey: {
-        name: "userID",
-        allowNull: false,
-    },
-    onDelete: "CASCADE",
+  as: "goals",
+  foreignKey: {
+    name: "userID",
+    allowNull: false,
+  },
+  onDelete: "CASCADE",
 });
 
 db.goal.belongsTo(db.user, {
-    as: "user",
-    foreignKey: {
-        name: "userID",
-        allowNull: false,
-    },
-    onDelete: "CASCADE",
+  as: "user",
+  foreignKey: {
+    name: "userID",
+    allowNull: false,
+  },
+  onDelete: "CASCADE",
 });
+
+db.user.hasMany(db.workout, {
+  as: "coachWorkouts",
+  foreignKey: "coachID",
+  onDelete: "CASCADE",
+});
+
+db.workout.belongsTo(db.user, {
+  as: "coach",
+  foreignKey: "coachID",
+  onDelete: "CASCADE",
+});
+
+db.user.hasMany(db.workout, {
+  as: "athleteWorkouts",
+  foreignKey: "athleteID",
+  onDelete: "CASCADE",
+});
+
+db.workout.belongsTo(db.user, {
+  as: "athlete",
+  foreignKey: "athleteID",
+  onDelete: "CASCADE",
+});
+
+db.user.hasMany(db.workout, {
+  as: "coachWorkouts",
+  foreignKey: "coachID",
+  onDelete: "CASCADE",
+});
+
+db.workout.belongsTo(db.user, {
+  as: "coach",
+  foreignKey: "coachID",
+  onDelete: "CASCADE",
+});
+
+db.user.hasMany(db.workout, {
+  as: "athleteWorkouts",
+  foreignKey: "athleteID",
+  onDelete: "CASCADE",
+});
+
+db.workout.belongsTo(db.user, {
+  as: "athlete",
+  foreignKey: "athleteID",
+  onDelete: "CASCADE",
+});
+
+db.user.hasMany(db.workout, {
+  as: "athleteWorkouts",
+  foreignKey: "athleteID",
+  onDelete: "CASCADE",
+});
+
+db.workout.belongsTo(db.user, {
+  as: "athlete",
+  foreignKey: "athleteID",
+  onDelete: "CASCADE",
+});
+
+db.workoutExercise.hasOne(db.workout, {
+  as: "workout",
+  foreignKey: "workoutID",
+  onDelete: "CASCADE",
+})
+
+db.workout.belongsTo(db.user, {
+  as: "athlete",
+  foreignKey: "athleteID",
+  onDelete: "CASCADE",
+});
+
+db.workoutExercise.hasOne(db.exerciseID, {
+  as: "exercise",
+  foreignKey: "exerciseID",
+  onDelete: "CASCADE",
+})
 
 export default db;

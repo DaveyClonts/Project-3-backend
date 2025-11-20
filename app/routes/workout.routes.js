@@ -7,7 +7,10 @@ var router = Router();
 router.post("/", [authenticate], workouts.create);
 
 // Retrieve all Exercises for user
-router.get("/userWorkouts/:userId", [authenticate], workouts.findAllForUser);
+router.get("/coachWorkouts/:coachID", [authenticate], workouts.findAllForCoach);
+
+// Retrieve all Workout for athlete
+router.get("/athleteWorkouts/:athleteID", [authenticate], workouts.findAllForAthlete);
 
 // Retrieve a single Exercise with id
 router.get("/:id", [authenticate], workouts.findOne);

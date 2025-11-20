@@ -17,6 +17,7 @@ export default {
             req.body.email,
             req.body.firstName,
             req.body.lastName,
+            req.body.role,
             req.body.id
         );
 
@@ -59,7 +60,8 @@ export default {
                         data.email,
                         data.firstName,
                         data.lastName,
-                        data.id
+                        data.id,
+                        data.role
                     );
 
                     res.send(user);
