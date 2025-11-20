@@ -3,22 +3,25 @@ import authenticate from "../authorization/authorization.js";
 import { Router } from "express";
 var router = Router();
 
-// Create a new Exercise
+// Create a new Workout
 router.post("/", [authenticate], workouts.create);
 
-// Retrieve all Exercises for user
+// Retrieve all Workouts for user
 router.get("/coachWorkouts/:coachID", [authenticate], workouts.findAllForCoach);
 
-// Retrieve all Workout for athlete
+// Retrieve all Workouts for athlete
 router.get("/athleteWorkouts/:athleteID", [authenticate], workouts.findAllForAthlete);
 
-// Retrieve a single Exercise with id
+// Retrieve all Workouts for athlete and coach
+router.get("/coachAthleteWorkouts/", [authenticate], workouts.findAllForCoachAndAthlete);
+
+// Retrieve a single Workout with id
 router.get("/:id", [authenticate], workouts.findOne);
 
-// Update a Exercise with id
+// Update a Workout with id
 router.put("/:id", [authenticate], workouts.update);
 
-// Delete a Exercise with id
+// Delete a Workout with id
 router.delete("/:id", [authenticate], workouts.delete);
 
 export default router;
