@@ -90,6 +90,30 @@ db.workout.belongsTo(db.user, {
 });
 
 db.user.hasMany(db.workout, {
+  as: "coachWorkouts",
+  foreignKey: "coachID",
+  onDelete: "CASCADE",
+});
+
+db.workout.belongsTo(db.user, {
+  as: "coach",
+  foreignKey: "coachID",
+  onDelete: "CASCADE",
+});
+
+db.user.hasMany(db.workout, {
+  as: "athleteWorkouts",
+  foreignKey: "athleteID",
+  onDelete: "CASCADE",
+});
+
+db.workout.belongsTo(db.user, {
+  as: "athlete",
+  foreignKey: "athleteID",
+  onDelete: "CASCADE",
+});
+
+db.user.hasMany(db.workout, {
   as: "athleteWorkouts",
   foreignKey: "athleteID",
   onDelete: "CASCADE",
