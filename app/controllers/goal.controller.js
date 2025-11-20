@@ -78,6 +78,34 @@ export default {
                 });
             });
     },
+    findOne: async (req, res) => {
+        const id = req.params.id;
+
+        SQLGoal.findByPk(id)
+            .then((data) => {
+                if (data) {
+                    const goal = new Goal(
+                        data.name,
+                        data.description,
+                        data.date,
+                        data.userID
+                    );
+
+                    res.send(goal);
+                } else {
+                    res.status(404).send({
+                        message: `Cannot find Goal with id=${id}.`,
+                    });
+                }
+            })
+            .catch((err) => {
+                res.status(500).send({
+                    message:
+                        err.message ||
+                        "Error retrieving Goal with id=" + id,
+                });
+            });
+    },
     update: async (req, res) => {
         const id = req.params.id;
 

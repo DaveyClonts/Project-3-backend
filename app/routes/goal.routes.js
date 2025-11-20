@@ -6,6 +6,9 @@ var router = Router();
 // Create a new Goal
 router.post("/", [authenticate], goal.create);
 
+// Retrieve all Goal
+router.get("/", [authenticate], goal.findAll);
+
 // Retrieve all Goal for user
 router.get("/:userID", [authenticate], goal.findAllForUser);
 
