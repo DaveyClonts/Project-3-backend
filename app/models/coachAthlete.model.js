@@ -10,10 +10,18 @@ const SQLCoachAthlete = SequelizeInstance.define("coachAthlete", {
     athleteID: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        references: {
+            model: 'users',
+            key: 'id',
+        }
     },
     coachID: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        references: {
+            model: 'users',
+            key: 'id',
+        }
     }
 });
 
