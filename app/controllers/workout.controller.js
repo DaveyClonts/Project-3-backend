@@ -1,9 +1,7 @@
 import db from "../models/index.js";
-import Exercise from "../classes/exercise.js";
-import SQLWorkout from "../models/workout.model.js";
+import Workout from "../classes/workout.js";
 
-const SQLExercise = db.exercise;
-const Op = db.Sequelize.Op;
+const SQLWorkout = db.workout;
 
 export default {
     create: async (req, res) => {
@@ -15,15 +13,13 @@ export default {
             return;
         }
 
-        const exercise = new Exercise(
+        const workout = new Workout(
             req.body.name,
-            req.body.type,
-            req.body.description ? req.body.description : "",
-            req.body.coachID
+            req.body.date
         );
 
         // Save Exercise in the database
-        SQLExercise.create(exercise)
+        SQLWorkout.create(workout)
             .then((data) => {
                 res.send(data);
             })
@@ -31,43 +27,20 @@ export default {
                 res.status(500).send({
                     message:
                         err.message ||
-                        "Some error occurred while creating the Exercise.",
+                        "Some error occurred while creating the Workout.",
                 });
             });
     },
     findAllForUser: async (req, res) => {
-        const coachID = req.query.coachID;
-        var condition = { coachID: { [Op.like]: `%${coachID}%` } };
+        const coachID = req.params.coachID;
         
-        SQLExercise.findAll({ where: condition })
-            .then((data) => {
-                res.send(data);
-            })
-            .catch((err) => {
-                res.status(500).send({
-                    message:
-                        err.message ||
-                        "Some error occurred while retrieving Exercises.",
-                });
-            });
-    },
-    findOne: async (req, res) => {
-        const id = req.params.id;
-
-        SQLExercise.findByPk(id)
+        SQLWorkout.findAll({ where: { coachID: coachID } })
             .then((data) => {
                 if (data) {
-                    const exercise = new Exercise(
-                        data.name,
-                        data.type,
-                        data.description,
-                        data.userId
-                    );
-
-                    res.send(exercise);
+                    res.send(data);
                 } else {
                     res.status(404).send({
-                        message: `Cannot find Exercise with id=${id}.`,
+                        message: `Cannot find Workouts for user with id=${coachID}.`,
                     });
                 }
             })
@@ -75,24 +48,50 @@ export default {
                 res.status(500).send({
                     message:
                         err.message ||
-                        "Error retrieving Exercise with id=" + id,
+                        "Error retrieving Workouts for user with id=" + coachID,
+                });
+            });
+    },
+    findOne: async (req, res) => {
+        const id = req.params.id;
+
+        SQLWorkout.findByPk(id)
+            .then((data) => {
+                if (data) {
+                    const workout = new Workout(
+                        data.name,
+                        data.date
+                    );
+
+                    res.send(workout);
+                } else {
+                    res.status(404).send({
+                        message: `Cannot find Workout with id=${id}.`,
+                    });
+                }
+            })
+            .catch((err) => {
+                res.status(500).send({
+                    message:
+                        err.message ||
+                        "Error retrieving Workout with id=" + id,
                 });
             });
     },
     update: async (req, res) => {
         const id = req.params.id;
 
-        SQLExercise.update(req.body, {
+        SQLWorkout.update(req.body, {
             where: { id: id },
         })
             .then((num) => {
                 if (num == 1) {
                     res.send({
-                        message: "Exercise was updated successfully.",
+                        message: "Workout was updated successfully.",
                     });
                 } else {
                     res.send({
-                        message: `Cannot update Exercise with id=${id}. Maybe Exercise was not found or req.body is empty!`,
+                        message: `Cannot update Workout with id=${id}. Maybe Workout was not found or req.body is empty!`,
                     });
                 }
             })
@@ -106,17 +105,17 @@ export default {
     delete: async (req, res) => {
         const id = req.params.id;
 
-        SQLExercise.destroy({
+        SQLWorkout.destroy({
             where: { id: id },
         })
             .then((num) => {
                 if (num == 1) {
                     res.send({
-                        message: "Exercise was deleted successfully!",
+                        message: "Workout was deleted successfully!",
                     });
                 } else {
                     res.send({
-                        message: `Cannot delete Exercise with id=${id}. Maybe Exercise was not found!`,
+                        message: `Cannot delete Workout with id=${id}. Maybe Workout was not found!`,
                     });
                 }
             })
@@ -124,7 +123,7 @@ export default {
                 res.status(500).send({
                     message:
                         err.message ||
-                        "Could not delete Exercise with id=" + id,
+                        "Could not delete Workout with id=" + id,
                 });
             });
     },
