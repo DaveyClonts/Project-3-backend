@@ -3,7 +3,6 @@ import Exercise from "../classes/exercise.js";
 import SQLWorkout from "../models/workout.model.js";
 
 const SQLExercise = db.exercise;
-const Op = db.Sequelize.Op;
 
 export default {
     create: async (req, res) => {
@@ -15,12 +14,19 @@ export default {
             return;
         }
 
+        if (req.body.type == undefined) {
+            res.status(500).send({ message: "Exercise requires a type!" });
+            return;
+        }
+
         const exercise = new Exercise(
             req.body.name,
-            req.body.type,
+            req.body.type.toUpperCase(),
             req.body.description ? req.body.description : "",
             req.body.coachID
         );
+
+        console.log("Request: " + JSON.stringify(exercise));
 
         // Save Exercise in the database
         SQLExercise.create(exercise)
@@ -28,6 +34,8 @@ export default {
                 res.send(data);
             })
             .catch((err) => {
+                console.log("Error creating exercise: " + err);
+
                 res.status(500).send({
                     message:
                         err.message ||
@@ -37,9 +45,8 @@ export default {
     },
     findAllForUser: async (req, res) => {
         const coachID = req.query.coachID;
-        var condition = { coachID: { [Op.like]: `%${coachID}%` } };
-        
-        SQLExercise.findAll({ where: condition })
+
+        SQLExercise.findAll({ where: coachID })
             .then((data) => {
                 res.send(data);
             })

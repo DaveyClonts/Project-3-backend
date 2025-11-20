@@ -20,7 +20,7 @@ db.workout = SQLWorkout;
 db.workoutExercise = SQLWorkoutExercise;
 db.goal = SQLGoal;
 
-
+// Users and sessions
 db.user.hasMany(db.session, {
   foreignKey: {
     name: "userID",
@@ -35,6 +35,7 @@ db.session.belongsTo(db.user, {
   },
 });
 
+// Exercises and coaches
 db.user.hasMany(db.exercise, {
   foreignKey: {
     name: "coachID",
@@ -49,6 +50,7 @@ db.exercise.belongsTo(db.user, {
   },
 });
 
+// Goals and athletes
 db.user.hasMany(db.goal, {
   as: "goals",
   foreignKey: {
@@ -57,7 +59,6 @@ db.user.hasMany(db.goal, {
   },
   onDelete: "CASCADE",
 });
-
 db.goal.belongsTo(db.user, {
   as: "user",
   foreignKey: {
@@ -67,28 +68,40 @@ db.goal.belongsTo(db.user, {
   onDelete: "CASCADE",
 });
 
+// Workouts and coaches
 db.user.hasMany(db.workout, {
   as: "coachWorkouts",
   foreignKey: "coachID",
   onDelete: "CASCADE",
 });
-
 db.workout.belongsTo(db.user, {
   as: "coach",
   foreignKey: "coachID",
   onDelete: "CASCADE",
 });
 
+// Workouts and athletes
 db.user.hasMany(db.workout, {
   as: "athleteWorkouts",
   foreignKey: "athleteID",
   onDelete: "CASCADE",
 });
-
 db.workout.belongsTo(db.user, {
   as: "athlete",
   foreignKey: "athleteID",
   onDelete: "CASCADE",
 });
+
+// Workouts + exercises
+db.workoutExercise.hasOne(db.workout, {
+  as: "workout",
+  foreignKey: "workoutID",
+  onDelete: "CASCADE",
+})
+db.workoutExercise.hasOne(db.exercise, {
+  as: "exercise",
+  foreignKey: "exerciseID",
+  onDelete: "CASCADE",
+})
 
 export default db;

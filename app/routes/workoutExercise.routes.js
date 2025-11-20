@@ -6,14 +6,10 @@ var router = Router();
 // Create a new Exercise
 router.post("/", [authenticate], workoutExercises.create);
 
-// Retrieve all Exercises for user
-router.get("/coachWorkouts/:userId", [authenticate], workoutExercises.findAllForCoach);
-
-// Retrieve all Workout for athlete
-router.get("/athleteWorkouts/:userId", [authenticate], workoutExercises.findAllForAthlete);
-
-// Retrieve a single Exercise with id
+// Retrieve a single Exercise with ids
 router.get("/", [authenticate], workoutExercises.findOne);
+
+router.get("/:workoutID", [authenticate], workoutExercises.findAllForWorkout);
 
 // Update a Exercise with id
 router.put("/", [authenticate], workoutExercises.update);
