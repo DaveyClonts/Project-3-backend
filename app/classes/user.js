@@ -7,7 +7,6 @@ export default class User {
         this.lastName = lastName;
         this.role = role
         this.sessionToken = token;
-        this.role = role;
     }
 
     isValid() {
