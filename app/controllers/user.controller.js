@@ -17,8 +17,8 @@ export default {
             req.body.email,
             req.body.firstName,
             req.body.lastName,
-            req.body.id,
-            req.body.role
+            req.body.role,
+            req.body.id
         );
 
         // Save User in the database
