@@ -40,7 +40,7 @@ export default {
 
         SQLUser.findAll({ where: condition })
             .then((data) => {
-                res.send(data);
+                res.status(200).send(data);
             })
             .catch((err) => {
                 res.status(500).send({
@@ -73,6 +73,19 @@ export default {
             .catch((err) => {
                 res.status(500).send({
                     message: `Error retrieving User with id=${id}.`,
+                });
+            });
+    },
+    findAllWithRole: async (req, res) => {
+        const role = req.params.role;
+
+        SQLUser.find({ where: role })
+            .then((data) => {
+                res.status(200).send(data);
+            })
+            .catch((err) => {
+                res.status(500).send({
+                    message: "Error while finding users with role: " + err,
                 });
             });
     },
