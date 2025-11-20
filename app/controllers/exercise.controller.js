@@ -36,10 +36,9 @@ export default {
             });
     },
     findAllForUser: async (req, res) => {
-        const coachID = req.query.coachID;
-        var condition = { coachID: { [Op.like]: `%${coachID}%` } };
+        const coachID = req.params.userID;
         
-        SQLExercise.findAll({ where: condition })
+        SQLExercise.findAll({ where: { coachID: coachID } })
             .then((data) => {
                 res.send(data);
             })

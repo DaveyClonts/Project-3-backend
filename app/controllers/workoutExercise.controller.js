@@ -28,8 +28,8 @@ export default {
                 });
             });
     },
-    findAllForCoach: async (req, res) => {
-        const coachID = req.params.coachID;
+    findAllForWorkout: async (req, res) => {
+        const workoutID = req.params.workoutID;
 
         SQLWorkoutExercise.findAll({ where: { workoutID: workoutID } })
             .then((data) => {
@@ -46,27 +46,6 @@ export default {
                     message:
                         err.message ||
                         "Error retrieving Workouts for user with id=" + workoutID,
-                });
-            });
-    },
-    findAllForAthlete: async (req, res) => {
-        const athleteID = req.params.athleteID;
-
-        SQLWorkoutExercise.findAll({ where: { athleteID: athleteID } })
-            .then((data) => {
-                if (data) {
-                    res.send(data);
-                } else {
-                    res.status(404).send({
-                        message: `Cannot find Workouts for user with id=${athleteID}.`,
-                    });
-                }
-            })
-            .catch((err) => {
-                res.status(500).send({
-                    message:
-                        err.message ||
-                        "Error retrieving Workouts for user with id=" + athleteID,
                 });
             });
     },

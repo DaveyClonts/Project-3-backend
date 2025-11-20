@@ -89,34 +89,5 @@ db.workout.belongsTo(db.user, {
   onDelete: "CASCADE",
 });
 
-db.user.hasMany(db.workout, {
-  as: "athleteWorkouts",
-  foreignKey: "athleteID",
-  onDelete: "CASCADE",
-});
-
-db.workout.belongsTo(db.user, {
-  as: "athlete",
-  foreignKey: "athleteID",
-  onDelete: "CASCADE",
-});
-
-db.workoutExercise.hasOne(db.workout, {
-  as: "workout",
-  foreignKey: "workoutID",
-  onDelete: "CASCADE",
-})
-
-db.workout.belongsTo(db.user, {
-  as: "athlete",
-  foreignKey: "athleteID",
-  onDelete: "CASCADE",
-});
-
-db.workoutExercise.hasOne(db.exerciseID, {
-  as: "exercise",
-  foreignKey: "exerciseID",
-  onDelete: "CASCADE",
-})
 
 export default db;

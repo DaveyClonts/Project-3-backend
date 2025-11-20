@@ -14,7 +14,7 @@ const SQLExercise = SequelizeInstance.define(
             allowNull: false,
         },
         type: {
-            type: DataTypes.ENUM("cardio, weights"),
+            type: DataTypes.ENUM("cardio", "weights"),
             allowNull: false,
         },
         description: {
