@@ -35,10 +35,7 @@ export default {
             });
     },
     findAll: async (req, res) => {
-        const id = req.query.id;
-        var condition = id ? { id: { [Op.like]: `%${id}%` } } : null;
-
-        SQLUser.findAll({ where: condition })
+        SQLUser.findAll()
             .then((data) => {
                 res.send(data);
             })
@@ -73,6 +70,22 @@ export default {
             .catch((err) => {
                 res.status(500).send({
                     message: `Error retrieving User with id=${id}.`,
+                });
+            });
+    },
+    findAllWithRole: async (req, res) => {
+        const role = req.params.role;
+        const condition = { role: { [Op.like]: role} };
+
+        SQLUser.findAll({ where: condition })
+            .then((data) => {
+                res.status(200).send(data);
+            })
+            .catch((err) => {
+                console.error("Error retrieving users with role: " + err);
+
+                res.status(500).send({
+                    message: "Error while finding users with role: " + err,
                 });
             });
     },
