@@ -1,8 +1,8 @@
 import { DataTypes } from "sequelize";
 import SequelizeInstance from "../config/sequelizeInstance.js";
 
-const SQLGoal = SequelizeInstance.define(
-  "goal",
+const SQLWorkout = SequelizeInstance.define(
+  "workout",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -11,12 +11,18 @@ const SQLGoal = SequelizeInstance.define(
     },
     name: {
       type: DataTypes.STRING,
-    },
-    description: {
-      type: DataTypes.STRING,
+      allowNull: false,
     },
     date: {
-      type: DataTypes.DATEONLY,
+      type: DataTypes.DATE,
+    },
+    coachID: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    athleteID: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
   },
   {
@@ -24,4 +30,4 @@ const SQLGoal = SequelizeInstance.define(
   }
 );
 
-export default SQLGoal;
+export default SQLWorkout;

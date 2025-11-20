@@ -5,16 +5,12 @@ const authenticate = (req, res, next) => {
     let token = null;
 
     console.log("Authenticating");
-
     const authHeader = req.get("authorization");
-
-    console.log("header: " + authHeader);
 
     if (authHeader != null) {
         if (authHeader.startsWith("Bearer ")) {
             token = authHeader.slice(7);
-            console.log("Finding session with token: " + token);
-
+            
             Session.findAll({ where: { token: token } })
                 .then((data) => {
                     console.log("Return data: " + JSON.stringify(data));

@@ -1,25 +1,32 @@
 import db from "../models/index.js";
 import Exercise from "../classes/exercise.js";
+import SQLWorkout from "../models/workout.model.js";
 
 const SQLExercise = db.exercise;
-const Op = db.Sequelize.Op;
 
 export default {
     create: async (req, res) => {
         // Validate request
-        if (!req.body.title) {
+        if (!req.body.name) {
             res.status(400).send({
                 message: "Content can not be empty!",
             });
             return;
         }
 
+        if (req.body.type == undefined) {
+            res.status(500).send({ message: "Exercise requires a type!" });
+            return;
+        }
+
         const exercise = new Exercise(
             req.body.name,
-            req.body.type,
+            req.body.type.toUpperCase(),
             req.body.description ? req.body.description : "",
-            req.body.userId
+            req.body.coachID
         );
+
+        console.log("Request: " + JSON.stringify(exercise));
 
         // Save Exercise in the database
         SQLExercise.create(exercise)
@@ -27,6 +34,8 @@ export default {
                 res.send(data);
             })
             .catch((err) => {
+                console.log("Error creating exercise: " + err);
+
                 res.status(500).send({
                     message:
                         err.message ||
@@ -34,11 +43,10 @@ export default {
                 });
             });
     },
-    findAll: async (req, res) => {
-        const title = req.query.title;
-        var condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
-        
-        SQLExercise.findAll({ where: condition })
+    findAllForUser: async (req, res) => {
+        const coachID = req.query.coachID;
+
+        SQLExercise.findAll({ where: coachID })
             .then((data) => {
                 res.send(data);
             })
@@ -47,27 +55,6 @@ export default {
                     message:
                         err.message ||
                         "Some error occurred while retrieving Exercises.",
-                });
-            });
-    },
-    findAllForUser: async (req, res) => {
-        const userId = req.params.userId;
-        
-        SQLExercise.findAll({ where: { userId: userId } })
-            .then((data) => {
-                if (data) {
-                    res.send(data);
-                } else {
-                    res.status(404).send({
-                        message: `Cannot find Exercises for user with id=${userId}.`,
-                    });
-                }
-            })
-            .catch((err) => {
-                res.status(500).send({
-                    message:
-                        err.message ||
-                        "Error retrieving Exercises for user with id=" + userId,
                 });
             });
     },

@@ -4,8 +4,11 @@ import sequelize from "../config/sequelizeInstance.js";
 import SQLUser from "./user.model.js";
 import SQLSession from "./session.model.js";
 import SQLExercise from "./exercise.model.js";
-import SQLGoal from "./goal.model.js";
 import SQLNote from "./note.model.js";
+import SQLWorkout from "./workout.model.js";
+import SQLWorkoutExercise from "./workoutExercise.model.js";
+import SQLGoal from "./goal.model.js";
+
 
 const db = {};
 db.Sequelize = Sequelize;
@@ -14,32 +17,96 @@ db.sequelize = sequelize;
 db.user = SQLUser;
 db.session = SQLSession;
 db.exercise = SQLExercise;
-db.goal = SQLGoal;
+
 db.note = SQLNote;
+db.workout = SQLWorkout;
+db.workoutExercise = SQLWorkoutExercise;
+db.goal = SQLGoal;
 
-// foreign key for session
-db.user.hasMany(
-  db.session,
-  { as: "session" },
-  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
-);
-db.session.belongsTo(
-  db.user,
-  { as: "user" },
-  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
-);
+// Users and sessions
+db.user.hasMany(db.session, {
+  foreignKey: {
+    name: "userID",
+    allowNull: false,
+  },
+  onDelete: "CASCADE",
+});
+db.session.belongsTo(db.user, {
+  foreignKey: {
+    name: "userID",
+    allowNull: false,
+  },
+});
 
-// foreign key for tutorials
-db.user.hasMany(
-  db.exercise,
-  { as: "tutorial" },
-  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
-);
-db.exercise.belongsTo(
-  db.user,
-  { as: "user" },
-  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
-);
+// Exercises and coaches
+db.user.hasMany(db.exercise, {
+  foreignKey: {
+    name: "coachID",
+    allowNull: false,
+  },
+  onDelete: "CASCADE",
+});
+db.exercise.belongsTo(db.user, {
+  foreignKey: {
+    name: "coachID",
+    allowNull: false,
+  },
+});
+
+// Goals and athletes
+db.user.hasMany(db.goal, {
+  as: "goals",
+  foreignKey: {
+    name: "userID",
+    allowNull: false,
+  },
+  onDelete: "CASCADE",
+});
+db.goal.belongsTo(db.user, {
+  as: "user",
+  foreignKey: {
+    name: "userID",
+    allowNull: false,
+  },
+  onDelete: "CASCADE",
+});
+
+// Workouts and coaches
+db.user.hasMany(db.workout, {
+  as: "coachWorkouts",
+  foreignKey: "coachID",
+  onDelete: "CASCADE",
+});
+db.workout.belongsTo(db.user, {
+  as: "coach",
+  foreignKey: "coachID",
+  onDelete: "CASCADE",
+});
+
+// Workouts and athletes
+db.user.hasMany(db.workout, {
+  as: "athleteWorkouts",
+  foreignKey: "athleteID",
+  onDelete: "CASCADE",
+});
+db.workout.belongsTo(db.user, {
+  as: "athlete",
+  foreignKey: "athleteID",
+  onDelete: "CASCADE",
+});
+
+// Workouts + exercises
+db.workoutExercise.hasOne(db.workout, {
+  as: "workout",
+  foreignKey: "workoutID",
+  onDelete: "CASCADE",
+})
+db.workoutExercise.hasOne(db.exercise, {
+  as: "exercise",
+  foreignKey: "exerciseID",
+  onDelete: "CASCADE",
+})
+
 
 // foreign key for goals
 db.user.hasMany(db.goal, {

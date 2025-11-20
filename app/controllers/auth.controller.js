@@ -72,6 +72,7 @@ async function findOrCreateDatabaseUser(googleUser) {
                     userInfo.email,
                     userInfo.firstName,
                     userInfo.lastName,
+                    userInfo.role,
                     userInfo.id
                 );
             } else user = new User(email, firstName, lastName);
@@ -81,7 +82,7 @@ async function findOrCreateDatabaseUser(googleUser) {
         });
 
     // this lets us get the user id
-    if (user.id === undefined) {
+    if (user.id === null) {
         await SQLUser.create(user)
             .then((data) => {
                 const userInfo = data.dataValues;
@@ -90,6 +91,7 @@ async function findOrCreateDatabaseUser(googleUser) {
                     userInfo.email,
                     userInfo.firstName,
                     userInfo.lastName,
+                    userInfo.role,
                     userInfo.id
                 );
             })
@@ -116,6 +118,7 @@ async function findOrCreateDatabaseUser(googleUser) {
                     user.email,
                     user.firstName,
                     user.lastName,
+                    user.role,
                     user.id
                 );
             })
@@ -150,6 +153,7 @@ async function findUserByID(id) {
                     userInfo.email,
                     userInfo.firstName,
                     userInfo.lastName,
+                    userInfo.role,
                     userInfo.id
                 );
             }
@@ -172,7 +176,7 @@ async function updateSessionStatus(user) {
 
     await SQLSession.findOne({
         where: {
-            email: user.email,
+            userID: user.id,
             token: { [Op.ne]: "" },
         },
     })
@@ -182,9 +186,9 @@ async function updateSessionStatus(user) {
 
                 session = new Session(
                     sessionInfo.userID,
-                    sessionInfo.email,
                     sessionInfo.token,
                     sessionInfo.expirationDate,
+                    sessionInfo.role,
                     sessionInfo.id
                 );
 
@@ -215,6 +219,7 @@ async function updateSessionStatus(user) {
                         user.email,
                         user.firstName,
                         user.lastName,
+                        user.role,
                         user.id,
                         session.token
                     );
@@ -239,7 +244,7 @@ async function updateSessionStatus(user) {
     let tempExpirationDate = new Date();
     tempExpirationDate.setDate(tempExpirationDate.getDate() + 1);
 
-    session = new Session(user.id, user.email, token, tempExpirationDate);
+    session = new Session(user.id, token, tempExpirationDate);
 
     console.log("Making a new session.");
     console.log(session);
@@ -252,6 +257,7 @@ async function updateSessionStatus(user) {
                 user.email,
                 user.firstName,
                 user.lastName,
+                user.role,
                 user.id,
                 token
             );
@@ -272,10 +278,7 @@ async function updateGoogleToken(user) {
     await SQLUser.update(user, { where: { id: user.id } })
         .then((num) => {
             if (num == 1) console.log("Updated User's Google token.");
-            else
-                console.log(
-                    `Cannot update User with id=${user.id}. Maybe User was not found or req.body is empty!`
-                );
+            else console.log(`User ${user.id} is up to date.`);
         })
         .catch((err) => {
             throw err;
@@ -295,7 +298,6 @@ async function deleteSession(token) {
                 const sessionInfo = data[0].dataValues;
                 session = new Session(
                     sessionInfo.id,
-                    sessionInfo.email,
                     sessionInfo.token,
                     sessionInfo.expirationDate
                 );
@@ -381,26 +383,33 @@ export default {
             });
     },
     authorize: async (req, res) => {
-        let user;
+        let user = {};
 
         await findUserByID(req.body.id)
             .then((googleUser) => (user = googleUser))
             .catch((err) => {
                 console.log(`Failed to find User: ${err.message}.`);
-                res.status(500).send(`Failed to find User: ${err.message}.`);
+                res.status(500).send({
+                    message: `Failed to find User: ${err.message}.`,
+                });
             });
 
-        if (user == null) return;
+        if (user.id === undefined) {
+            console.log("Failed to find User.");
+            res.status(500).send({ message: `Failed to find User.` });
+
+            return;
+        }
 
         await updateGoogleToken(user)
-            .then(() => {
-                res.status(200).send({});
+            .then((isValid) => {
+                res.status(200).send({ valid: isValid });
             })
             .catch((err) => {
                 console.log(
                     `Error updating User's authentication token: ${err.message}.`
                 );
-                res.status(500).send(err.message);
+                res.status(500).send({ message: err.message });
             });
     },
     logout: async (req, res) => {
