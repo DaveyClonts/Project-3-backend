@@ -59,6 +59,7 @@ async function findOrCreateDatabaseUser(googleUser) {
     const email = googleUser.email;
     const firstName = googleUser.firstName;
     const lastName = googleUser.lastName;
+    const role = "coach";
 
     await SQLUser.findOne({
         where: {
@@ -72,9 +73,10 @@ async function findOrCreateDatabaseUser(googleUser) {
                     userInfo.email,
                     userInfo.firstName,
                     userInfo.lastName,
+                    userInfo.role,
                     userInfo.id
                 );
-            } else user = new User(email, firstName, lastName);
+            } else user = new User(email, firstName, lastName, role);
         })
         .catch((err) => {
             throw err;
@@ -90,6 +92,7 @@ async function findOrCreateDatabaseUser(googleUser) {
                     userInfo.email,
                     userInfo.firstName,
                     userInfo.lastName,
+                    userInfo.role,
                     userInfo.id
                 );
             })
@@ -116,6 +119,7 @@ async function findOrCreateDatabaseUser(googleUser) {
                     user.email,
                     user.firstName,
                     user.lastName,
+                    user.role,
                     user.id
                 );
             })
@@ -150,6 +154,7 @@ async function findUserByID(id) {
                     userInfo.email,
                     userInfo.firstName,
                     userInfo.lastName,
+                    userInfo.role,
                     userInfo.id
                 );
             }
@@ -184,6 +189,7 @@ async function updateSessionStatus(user) {
                     sessionInfo.userID,
                     sessionInfo.token,
                     sessionInfo.expirationDate,
+                    sessionInfo.role, 
                     sessionInfo.id
                 );
 
@@ -214,6 +220,7 @@ async function updateSessionStatus(user) {
                         user.email,
                         user.firstName,
                         user.lastName,
+                        user.role,
                         user.id,
                         session.token
                     );
@@ -249,6 +256,7 @@ async function updateSessionStatus(user) {
                 user.email,
                 user.firstName,
                 user.lastName,
+                user.role,
                 user.id,
                 token
             );

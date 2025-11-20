@@ -34,22 +34,6 @@ export default {
                 });
             });
     },
-    findAll: async (req, res) => {
-        const name = req.query.name;
-        var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
-        
-        SQLGoal.findAll({ where: condition })
-            .then((data) => {
-                res.send(data);
-            })
-            .catch((err) => {
-                res.status(500).send({
-                    message:
-                        err.message ||
-                        "Some error occurred while retrieving Goals.",
-                });
-            });
-    },
     findAllForUser: async (req, res) => {
         const userID = req.params.userID;
         
@@ -75,34 +59,6 @@ export default {
                     message:
                         err.message ||
                         "Error retrieving Goals for user with id=" + userID,
-                });
-            });
-    },
-    findOne: async (req, res) => {
-        const id = req.params.id;
-
-        SQLGoal.findByPk(id)
-            .then((data) => {
-                if (data) {
-                    const goal = new Goal(
-                        data.name,
-                        data.description,
-                        data.date,
-                        data.userID
-                    );
-
-                    res.send(goal);
-                } else {
-                    res.status(404).send({
-                        message: `Cannot find Goal with id=${id}.`,
-                    });
-                }
-            })
-            .catch((err) => {
-                res.status(500).send({
-                    message:
-                        err.message ||
-                        "Error retrieving Goal with id=" + id,
                 });
             });
     },
