@@ -9,6 +9,9 @@ router.post("/", [authenticate], users.create);
 // Retrieve all Users
 router.get("/", [authenticate], users.findAll);
 
+// Retrieve all Users with role
+router.get("/roles/:role", [authenticate], users.findAllWithRole);
+
 // Retrieve a single User with id
 router.get("/:id", [authenticate], users.findOne);
 
