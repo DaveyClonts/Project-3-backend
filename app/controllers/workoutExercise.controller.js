@@ -31,13 +31,13 @@ export default {
     findAllForWorkout: async (req, res) => {
         const workoutID = req.params.workoutID;
 
-        SQLWorkoutExercise.findAll({ where: { workoutID: workoutID } })
+        SQLWorkoutExercise.findAll({ where: { workoutID } })
             .then((data) => {
                 if (data) {
                     res.send(data);
                 } else {
                     res.status(404).send({
-                        message: `Cannot find Workouts for user with id=${workoutID}.`,
+                        message: `Cannot find Workouts with id=${workoutID}.`,
                     });
                 }
             })
@@ -45,7 +45,7 @@ export default {
                 res.status(500).send({
                     message:
                         err.message ||
-                        "Error retrieving Workouts for user with id=" + workoutID,
+                        "Error retrieving Workouts with id=" + workoutID,
                 });
             });
     },

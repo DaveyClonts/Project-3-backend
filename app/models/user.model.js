@@ -20,7 +20,7 @@ const SQLUser = SequelizeInstance.define("user", {
     allowNull: false,
   },
   role: {
-    type: DataTypes.ENUM("coach", "athlete", "admin"),
+    type: DataTypes.ENUM("Coach", "Athlete", "Admin"),
   },
 });
 
