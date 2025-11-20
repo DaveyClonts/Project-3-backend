@@ -1,15 +1,15 @@
 export default class User {
-    constructor(email, firstName, lastName, role, id = undefined, token = undefined)
+    constructor(email, firstName, lastName, role = null, id = null, token = null)
     {
         this.id = id;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.role = role
-        this.sessionToken = token;
+        this.token = token;
     }
 
     isValid() {
-        return this.email !== undefined && this.firstName !== undefined && this.lastName !== undefined;
+        return this.email !== null && this.firstName !== null && this.lastName !== null;
     }
 }

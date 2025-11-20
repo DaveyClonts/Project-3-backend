@@ -59,7 +59,6 @@ async function findOrCreateDatabaseUser(googleUser) {
     const email = googleUser.email;
     const firstName = googleUser.firstName;
     const lastName = googleUser.lastName;
-    const role = "coach";
 
     await SQLUser.findOne({
         where: {
@@ -76,14 +75,14 @@ async function findOrCreateDatabaseUser(googleUser) {
                     userInfo.role,
                     userInfo.id
                 );
-            } else user = new User(email, firstName, lastName, role);
+            } else user = new User(email, firstName, lastName);
         })
         .catch((err) => {
             throw err;
         });
 
     // this lets us get the user id
-    if (user.id === undefined) {
+    if (user.id === null) {
         await SQLUser.create(user)
             .then((data) => {
                 const userInfo = data.dataValues;
@@ -189,7 +188,7 @@ async function updateSessionStatus(user) {
                     sessionInfo.userID,
                     sessionInfo.token,
                     sessionInfo.expirationDate,
-                    sessionInfo.role, 
+                    sessionInfo.role,
                     sessionInfo.id
                 );
 
@@ -277,10 +276,7 @@ async function updateGoogleToken(user) {
     await SQLUser.update(user, { where: { id: user.id } })
         .then((num) => {
             if (num == 1) console.log("Updated User's Google token.");
-            else
-                console.log(
-                    `Cannot update User with id=${user.id}. Maybe User was not found or req.body is empty!`
-                );
+            else console.log(`User ${user.id} is up to date.`);
         })
         .catch((err) => {
             throw err;
@@ -385,26 +381,33 @@ export default {
             });
     },
     authorize: async (req, res) => {
-        let user;
+        let user = {};
 
         await findUserByID(req.body.id)
             .then((googleUser) => (user = googleUser))
             .catch((err) => {
                 console.log(`Failed to find User: ${err.message}.`);
-                res.status(500).send(`Failed to find User: ${err.message}.`);
+                res.status(500).send({
+                    message: `Failed to find User: ${err.message}.`,
+                });
             });
 
-        if (user == null) return;
+        if (user.id === undefined) {
+            console.log("Failed to find User.");
+            res.status(500).send({ message: `Failed to find User.` });
+
+            return;
+        }
 
         await updateGoogleToken(user)
-            .then(() => {
-                res.status(200).send({});
+            .then((isValid) => {
+                res.status(200).send({ valid: isValid });
             })
             .catch((err) => {
                 console.log(
                     `Error updating User's authentication token: ${err.message}.`
                 );
-                res.status(500).send(err.message);
+                res.status(500).send({ message: err.message });
             });
     },
     logout: async (req, res) => {
