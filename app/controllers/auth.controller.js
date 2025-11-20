@@ -172,7 +172,7 @@ async function updateSessionStatus(user) {
 
     await SQLSession.findOne({
         where: {
-            email: user.email,
+            userID: user.id,
             token: { [Op.ne]: "" },
         },
     })
@@ -182,7 +182,6 @@ async function updateSessionStatus(user) {
 
                 session = new Session(
                     sessionInfo.userID,
-                    sessionInfo.email,
                     sessionInfo.token,
                     sessionInfo.expirationDate,
                     sessionInfo.id
@@ -239,12 +238,10 @@ async function updateSessionStatus(user) {
     let tempExpirationDate = new Date();
     tempExpirationDate.setDate(tempExpirationDate.getDate() + 1);
 
-    session = new Session(user.id, user.email, token, tempExpirationDate);
+    session = new Session(user.id, token, tempExpirationDate);
 
     console.log("Making a new session.");
     console.log(session);
-
-    console.log("Creating session with token: " + token);
 
     await SQLSession.create(session)
         .then(() => {
@@ -295,7 +292,6 @@ async function deleteSession(token) {
                 const sessionInfo = data[0].dataValues;
                 session = new Session(
                     sessionInfo.id,
-                    sessionInfo.email,
                     sessionInfo.token,
                     sessionInfo.expirationDate
                 );

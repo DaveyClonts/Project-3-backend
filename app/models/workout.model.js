@@ -1,21 +1,20 @@
 import { DataTypes } from "sequelize";
 import SequelizeInstance from "../config/sequelizeInstance.js";
 
-const SQLSession = SequelizeInstance.define(
-    "session",
+const SQLWorkout = SequelizeInstance.define(
+    "workout",
     {
         id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
         },
-        token: {
-            type: DataTypes.STRING(3000),
+        name: {
+            type: DataTypes.STRING,
             allowNull: false,
         },
-        expirationDate: {
+        date: {
             type: DataTypes.DATE,
-            allowNull: false,
         },
     },
     {
@@ -23,4 +22,4 @@ const SQLSession = SequelizeInstance.define(
     }
 );
 
-export default SQLSession;
+export default SQLWorkout;
