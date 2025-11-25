@@ -15,7 +15,6 @@ export default {
 
         //create a CoachAthlete (match)
         const coachAthlete = new CoachAthlete(
-            req.body.id,
             req.body.coachID,
             req.body.athleteID,
         );
