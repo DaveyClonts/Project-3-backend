@@ -1,7 +1,6 @@
 export default class coachAthlete {
-    constructor(id, athleteID, coachID) {
-        this.id = id;
-        this.athleteID = athleteID;
+    constructor(coachID, athleteID) {
         this.coachID = coachID;
+        this.athleteID = athleteID;
     }
 }
