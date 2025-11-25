@@ -6,7 +6,7 @@ const SQLCoachAthlete = db.coachAthlete;
 export default {
     create: async (req, res) => {
         //Validation
-        if (!req.body.id) {
+        if (!req.body.coachID) {
             res.status(400).send({
                 message: "Content can not be empty!",
             });
