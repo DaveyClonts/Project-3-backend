@@ -1,5 +1,5 @@
-import coachAthlete from "../classes/coachAthlete";
-import authenticate from "../authorization/authorization";
+import coachAthlete from "../controllers/coachAthlete.controller.js";
+import authenticate from "../authorization/authorization.js";
 import { Router } from "express";
 var router = Router();
 
@@ -7,10 +7,10 @@ var router = Router();
 router.post("/", [authenticate], coachAthlete.create);
 
 //Retrieve all Coach Athlete matches for a coach
-router.get("/coachAthlete/:coachID", [authenticate], workflowexecutions.findAllForCoach);
+router.get("/coachAthlete/:coachID", [authenticate], coachAthlete.findAllForCoach);
 
 //Retrieve a single coach athlete match for an id
-router.get(":/id", [authenticate], coachAthlete.findOne);
+router.get("/:id", [authenticate], coachAthlete.findOne);
 
 //Update a coach athlete match with an id
 router.put("/:id", [authenticate], coachAthlete.update);
