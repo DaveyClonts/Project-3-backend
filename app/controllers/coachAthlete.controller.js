@@ -37,9 +37,14 @@ export default {
 
         //filter for user with an id = to coachID
         SQLCoachAthlete.findAll({
+            // include: [
+            //     { model: db.user, as: "coach", where: { id: coachID}}
+            // ],
+            where: { coachID },
             include: [
-                { model: db.user, as: "coach", where: { id: coachID}}
-            ],
+                { model: db.user, as: "coach"},
+                // { model: db.user, as: "athlete"},
+            ]
         })
             .then((data) => {
                 if (data) {
@@ -109,7 +114,7 @@ export default {
     delete: async (req, res) => {
         const id = req.params.id;
 
-        SQLWorkout.destroy({
+        SQLCoachAthlete.destroy({
             where: { id: id },
         })
             .then((num) => {
