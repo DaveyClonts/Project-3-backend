@@ -42,8 +42,8 @@ export default {
             // ],
             where: { coachID },
             include: [
-                { model: db.user, as: "coach"},
-                // { model: db.user, as: "athlete"},
+                // { model: db.user, as: "coach"},
+                { model: db.user, as: "athlete"},
             ]
         })
             .then((data) => {
