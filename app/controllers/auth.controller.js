@@ -202,7 +202,6 @@ async function updateSessionStatus(user) {
                         .then((num) => {
                             if (num == 1)
                                 console.log("Successfully logged out.");
-                            else throw new Error("Error logging out user.");
                         })
                         .catch((err) => {
                             throw err;
