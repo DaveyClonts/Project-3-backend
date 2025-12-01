@@ -5,6 +5,8 @@ const SQLWorkoutExercise = db.workoutExercise;
 
 export default {
     create: async (req, res) => {
+        console.log("Create!");
+
         // Validate request
         if (!req.body.workoutID) {
             res.status(400).send({
@@ -13,14 +15,21 @@ export default {
             return;
         }
 
-        const workout = new WorkoutExercise(req.body.workoutID, req.body.date);
+        const exercise = new WorkoutExercise(
+            req.body.workoutID,
+            req.body.exerciseID
+        );
 
         // Save Exercise in the database
-        SQLWorkoutExercise.create(workout)
+        SQLWorkoutExercise.create(exercise)
             .then((data) => {
+                console.log("Created workout exercise.");
                 res.send(data);
             })
             .catch((err) => {
+                console.error(
+                    "Error creating workout exercise: " + err.message
+                );
                 res.status(500).send({
                     message:
                         err.message ||
@@ -111,8 +120,8 @@ export default {
             });
     },
     delete: async (req, res) => {
-        const workoutID = req.body.workoutID;
-        const exerciseID = req.body.exerciseID;
+        const workoutID = req.params.workoutID;
+        const exerciseID = req.params.exerciseID;
 
         SQLWorkoutExercise.destroy({
             where: {
@@ -122,20 +131,26 @@ export default {
         })
             .then((num) => {
                 if (num == 1) {
+                    console.log("Workout was deleted successfully.");
+
                     res.send({
                         message: "Workout was deleted successfully!",
                     });
                 } else {
+                    console.log(`Cannot delete Workout with id=${workoutID}.`);
+
                     res.send({
                         message: `Cannot delete Workout with id=${workoutID}. Maybe Workout was not found!`,
                     });
                 }
             })
             .catch((err) => {
+                console.log(
+                    `Error deleting workout with id=${workoutID}: ${err}`
+                );
+
                 res.status(500).send({
-                    message:
-                        err.message ||
-                        "Could not delete Workout with id=" + workoutID,
+                    message: `Error deleting workout with id=${workoutID}: ${err}`,
                 });
             });
     },

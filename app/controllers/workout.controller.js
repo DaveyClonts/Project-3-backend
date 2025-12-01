@@ -23,7 +23,7 @@ export default {
         // Save Exercise in the database
         SQLWorkout.create(workout)
             .then((data) => {
-                res.send(data);
+                res.status(200).send(data);
             })
             .catch((err) => {
                 res.status(500).send({
@@ -86,25 +86,33 @@ export default {
             });
     },
     findAllForCoachAndAthlete: async (req, res) => {
-        const coachID = req.body.coachID;
-        const athleteID = req.body.athleteID;
+        const coachID = req.params.coachID;
+        const athleteID = req.params.athleteID;
+        console.log("request params: " + JSON.stringify(req.params));
+
+        console.log(`Finding workouts for coach=${coachID} and athlete=${athleteID}`);
 
         SQLWorkout.findAll({
-            include: [
-                { model: db.user, as: "coach", where: { id: coachID } },
-                { model: db.user, as: "athlete", where: { id: athleteID } },
-            ],
+            where: {
+                coachID,
+                athleteID
+            }
         })
             .then((data) => {
                 if (data) {
+                    console.log("Found Workouts: " + JSON.stringify(data));
                     res.send(data);
                 } else {
+                    console.log(`Cannot find Workouts for user with id=${athleteID}.`);
+
                     res.status(404).send({
                         message: `Cannot find Workouts for user with id=${athleteID}.`,
                     });
                 }
             })
             .catch((err) => {
+                console.log("Error retrieving workouts: " + err.message);
+
                 res.status(500).send({
                     message:
                         err.message ||

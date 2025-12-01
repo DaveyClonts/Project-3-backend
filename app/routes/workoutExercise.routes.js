@@ -7,7 +7,7 @@ var router = Router();
 router.post("/", [authenticate], workoutExercises.create);
 
 // Retrieve a single Exercise with ids
-router.get("/", [authenticate], workoutExercises.findOne);
+router.get("/:workoutID/:exerciseID", [authenticate], workoutExercises.findOne);
 
 router.get("/:workoutID", [authenticate], workoutExercises.findAllForWorkout);
 
@@ -15,6 +15,6 @@ router.get("/:workoutID", [authenticate], workoutExercises.findAllForWorkout);
 router.put("/", [authenticate], workoutExercises.update);
 
 // Delete a Exercise with id
-router.delete("/", [authenticate], workoutExercises.delete);
+router.delete("/:workoutID/:exerciseID", [authenticate], workoutExercises.delete);
 
 export default router;
