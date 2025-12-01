@@ -13,6 +13,7 @@ const authenticate = (req, res, next) => {
             
             Session.findAll({ where: { token: token } })
                 .then((data) => {
+                    console.log("Return data: " + JSON.stringify(data));
                     const session = data[0];
 
                     if (session != null) {
