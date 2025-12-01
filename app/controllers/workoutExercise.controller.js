@@ -17,7 +17,7 @@ export default {
 
         console.log("Creating workout exercise.");
 
-        const exercise = null;
+        let exercise = null;
         if (req.body.reps !== undefined)
             exercise = WorkoutExercise.WeightExercise(
                 req.body.workoutID,
