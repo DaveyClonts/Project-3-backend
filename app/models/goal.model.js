@@ -4,7 +4,7 @@ import SequelizeInstance from "../config/sequelizeInstance.js";
 const SQLGoal = SequelizeInstance.define(
   "goal",
   {
-    id: {
+    goalID: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,

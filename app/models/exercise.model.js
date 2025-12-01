@@ -11,12 +11,9 @@ const SQLExercise = SequelizeInstance.define(
         },
         name: {
             type: DataTypes.STRING,
-            allowNull: false,
         },
         type: {
-            type: DataTypes.ENUM,
-            values: ["Weights", "Cardio"],
-            allowNull: false,
+            type: DataTypes.ENUM("cardio, weights"),
         },
         description: {
             type: DataTypes.STRING,

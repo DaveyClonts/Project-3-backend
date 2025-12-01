@@ -2,12 +2,16 @@ import { DataTypes } from "sequelize";
 import SequelizeInstance from "../config/sequelizeInstance.js";
 
 const SQLSession = SequelizeInstance.define(
-    "session",
+    "sessions",
     {
         id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
+        },
+        email: {
+            type: DataTypes.STRING,
+            allowNull: false,
         },
         token: {
             type: DataTypes.STRING(3000),
