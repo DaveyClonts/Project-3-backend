@@ -17,4 +17,6 @@ router.put("/", [authenticate], workoutExercises.update);
 // Delete a Exercise with id
 router.delete("/:workoutID/:exerciseID", [authenticate], workoutExercises.delete);
 
+router.delete("/:workoutID", [authenticate], workoutExercises.deleteAllForWorkout);
+
 export default router;

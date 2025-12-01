@@ -5,20 +5,34 @@ const SQLWorkoutExercise = db.workoutExercise;
 
 export default {
     create: async (req, res) => {
-        console.log("Create!");
-
         // Validate request
-        if (!req.body.workoutID) {
+        if (!req.body.exerciseID) {
+            console.error("Content cannot be empty!");
+
             res.status(400).send({
-                message: "Content can not be empty!",
+                message: "Content cannot be empty!",
             });
             return;
         }
 
-        const exercise = new WorkoutExercise(
-            req.body.workoutID,
-            req.body.exerciseID
-        );
+        console.log("Creating workout exercise.");
+
+        const exercise = null;
+        if (req.body.reps !== undefined)
+            exercise = WorkoutExercise.WeightExercise(
+                req.body.workoutID,
+                req.body.exerciseID,
+                req.body.reps,
+                req.body.sets,
+                req.body.weight
+            );
+        else
+            exercise = WorkoutExercise.CardioExercise(
+                req.body.workoutID,
+                req.body.exerciseID,
+                req.body.miles,
+                req.body.time
+            );
 
         // Save Exercise in the database
         SQLWorkoutExercise.create(exercise)
@@ -94,6 +108,8 @@ export default {
         const workoutID = req.body.workoutID;
         const exerciseID = req.body.exerciseID;
 
+        console.log("Update: " + JSON.stringify(req.body));
+
         SQLWorkoutExercise.update(req.body, {
             where: {
                 workoutID,
@@ -102,6 +118,8 @@ export default {
         })
             .then((num) => {
                 if (num == 1) {
+                    console.log("Workout exercise was updated successfully.");
+
                     res.send({
                         message: "Workout was updated successfully.",
                     });
@@ -112,10 +130,12 @@ export default {
                 }
             })
             .catch((err) => {
+                console.log("Error updating workout exercise: " + err);
+
                 res.status(500).send({
                     message:
                         err.message ||
-                        "Error updating Exercise with id=" + workoutID,
+                        "Error updating Workout exercise with id=" + workoutID,
                 });
             });
     },
@@ -151,6 +171,41 @@ export default {
 
                 res.status(500).send({
                     message: `Error deleting workout with id=${workoutID}: ${err}`,
+                });
+            });
+    },
+    deleteAllForWorkout: async (req, res) => {
+        const workoutID = req.params.workoutID;
+
+        console.log("Delete all for workout");
+
+        SQLWorkoutExercise.destroy({
+            where: {
+                workoutID,
+            },
+        })
+            .then((num) => {
+                if (num == 1) {
+                    console.log("Workouts were deleted successfully.");
+
+                    res.send({
+                        message: "Workouts were deleted successfully!",
+                    });
+                } else {
+                    console.log(`Cannot delete Workouts with id=${workoutID}.`);
+
+                    res.send({
+                        message: `Cannot delete Workouts with id=${workoutID}. Maybe Workouts were not found!`,
+                    });
+                }
+            })
+            .catch((err) => {
+                console.log(
+                    `Error deleting workouts with id=${workoutID}: ${err}`
+                );
+
+                res.status(500).send({
+                    message: `Error deleting workouts with id=${workoutID}: ${err}`,
                 });
             });
     },
