@@ -2,7 +2,6 @@ export default class WorkoutExercise {
     constructor(workoutID, exerciseID) {
         this.workoutID = workoutID;
         this.exerciseID = exerciseID;
-        this.fromDatabase = fromDatabase;
     }
 
     static WeightExercise(workoutID, exerciseID, reps, sets, weight) {
