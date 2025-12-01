@@ -8,6 +8,7 @@ import SQLNote from "./note.model.js";
 import SQLWorkout from "./workout.model.js";
 import SQLWorkoutExercise from "./workoutExercise.model.js";
 import SQLGoal from "./goal.model.js";
+import SQLCoachAthlete from "./coachAthlete.model.js";
 
 
 const db = {};
@@ -22,6 +23,7 @@ db.note = SQLNote;
 db.workout = SQLWorkout;
 db.workoutExercise = SQLWorkoutExercise;
 db.goal = SQLGoal;
+db.coachAthlete = SQLCoachAthlete;
 
 // Users and sessions
 db.user.hasMany(db.session, {
@@ -100,12 +102,28 @@ db.workoutExercise.hasOne(db.workout, {
   as: "workout",
   foreignKey: "workoutID",
   onDelete: "CASCADE",
-})
+});
 db.workoutExercise.hasOne(db.exercise, {
   as: "exercise",
   foreignKey: "exerciseID",
   onDelete: "CASCADE",
-})
+});
+
+// Coach and athletes
+db.coachAthlete.belongsTo(db.user, {
+  as: "coach",
+  foreignKey: {
+    name: "coachID",
+    field: "coachID"
+  }
+});
+db.coachAthlete.belongsTo(db.user, {
+  as: "athlete",
+  foreignKey: {
+    name: "athleteID",
+    field: "athleteID"
+  }
+});
 
 // foreign key for note
 db.goal.hasMany(db.note, {

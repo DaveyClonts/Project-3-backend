@@ -103,7 +103,8 @@ export default {
                         data.email,
                         data.firstName,
                         data.lastName,
-                        data.id
+                        data.id,
+                        data.role
                     );
 
                     res.send(user);
