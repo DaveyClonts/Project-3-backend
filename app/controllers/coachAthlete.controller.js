@@ -16,15 +16,18 @@ export default {
         //create a CoachAthlete (match)
         const coachAthlete = new CoachAthlete(
             req.body.coachID,
-            req.body.athleteID,
+            req.body.athleteID
         );
 
         //Save the CoachAthlete (match) in the database
-        SQLCoachAthlete.create(coachAthlete) 
+        SQLCoachAthlete.create(coachAthlete)
             .then((data) => {
+                console.log("Successfully created coach athlete.");
                 res.send(data);
             })
             .catch((err) => {
+                console.error("Error creating coach athlete: " + err);
+
                 res.status(500).send({
                     message:
                         err.message ||
@@ -43,54 +46,55 @@ export default {
             where: { coachID },
             include: [
                 // { model: db.user, as: "coach"},
-                { model: db.user, as: "athlete"},
-            ]
+                { model: db.user, as: "athlete" },
+            ],
         })
             .then((data) => {
                 if (data) {
                     res.send(data);
                 } else {
                     res.status(404).send({
-                        message: "Cannont find Coach Athlete Match for Coach with userID = " + coachID,
-                    });
-                }
-            })
-            .catch((err) => {
-                res.status(500).send({
-                    message: 
-                        err.message ||
-                        "Error retrieveing Coach Athlete match for user with id = " + coachID,
-                });
-            });
-    },
-    findOne: async (req, res) => {
-        const id = req.params.id;
-
-        SQLCoachAthlete.findByPk(id)
-            .then((data) => {
-                if (data) {
-                    //maybe want different data?
-                    const coachAthlete = new CoachAthlete(data.id, data.AthleteID);
-
-                    res.send(coachAthlete);
-                } else {
-                    res.status(404).send({
-                        message: 'Cannont find coach athlete match with id = ' + id,
+                        message:
+                            "Cannont find Coach Athlete Match for Coach with userID = " +
+                            coachID,
                     });
                 }
             })
             .catch((err) => {
                 res.status(500).send({
                     message:
-                        err.message || "Error retrieving coach athlete match with id=" + id,
+                        err.message ||
+                        "Error retrieveing Coach Athlete match for user with id = " +
+                            coachID,
                 });
             });
     },
+    findOne: async (req, res) => {
+        const coachID = req.params.coachID;
+        const athleteID = req.params.athleteID;
+
+        SQLCoachAthlete.find({
+            where: {
+                coachID,
+                athleteID,
+            },
+        }).then((data) => {
+            if (data) {
+                const coachAthlete = new CoachAthlete(
+                    data.coachID,
+                    data.athleteID
+                );
+
+                res.send(coachAthlete);
+            }
+        });
+    },
     update: async (req, res) => {
-        const id = req.params.id;
+        const coachID = req.params.coachID;
+        const athleteID = req.params.athleteID;
 
         SQLCoachAthlete.update(req.body, {
-            where: { id: id },
+            where: { coachID, athleteID },
         })
             .then((num) => {
                 //num is apparently the number of rows? So if there is one new row after update
@@ -100,7 +104,7 @@ export default {
                     });
                 } else {
                     res.send({
-                        message: `Cannot update Coach Athlete Match with id = ${id}. Maybe Match was not found or req.body is empty`
+                        message: `Cannot update Coach Athlete Match with id = ${id}. Maybe Match was not found or req.body is empty`,
                     });
                 }
             })
@@ -112,27 +116,31 @@ export default {
             });
     },
     delete: async (req, res) => {
-        const id = req.params.id;
+        const coachID = req.params.coachID;
+        const athleteID = req.params.athleteID;
 
         SQLCoachAthlete.destroy({
-            where: { id: id },
+            where: { coachID, athleteID },
         })
             .then((num) => {
                 if (num == 1) {
                     res.send({
-                        message: "Coach Athlete Match was deleted successfully!",
+                        message:
+                            "Coach Athlete Match was deleted successfully!",
                     });
                 } else {
                     res.send({
-                        message: `Cannot delete Coach Athlete Match with id=${id}. Maybe Match was not found!`,
+                        message: `Cannot delete Coach Athlete Match with id=${coachID}. Maybe Match was not found!`,
                     });
                 }
             })
             .catch((err) => {
                 res.status(500).send({
                     message:
-                        err.message || "Could not delete Coach Athlete Match with id=" + id,
+                        err.message ||
+                        "Could not delete Coach Athlete Match with id=" +
+                            coachID,
                 });
             });
     },
-}
+};
