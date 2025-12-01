@@ -20,12 +20,15 @@ export default {
             req.body.athleteID
         );
 
-        // Save Exercise in the database
+        // Save Workout in the database
         SQLWorkout.create(workout)
             .then((data) => {
+                console.log("Successfully created workout.");
                 res.status(200).send(data);
             })
             .catch((err) => {
+                console.error("Error creating workout: " + err);
+
                 res.status(500).send({
                     message:
                         err.message ||
@@ -170,21 +173,29 @@ export default {
     delete: async (req, res) => {
         const id = req.params.id;
 
+        console.log("Delete workout");
+
         SQLWorkout.destroy({
             where: { id: id },
         })
             .then((num) => {
                 if (num == 1) {
+                    console.log("Workout deleted successfully.");
+
                     res.send({
                         message: "Workout was deleted successfully!",
                     });
                 } else {
+                    console.log(`Cannot delete Workout with id=${id}.`);
+
                     res.send({
                         message: `Cannot delete Workout with id=${id}. Maybe Workout was not found!`,
                     });
                 }
             })
             .catch((err) => {
+                console.error("Error deleting workout: " + err);
+
                 res.status(500).send({
                     message:
                         err.message || "Could not delete Workout with id=" + id,
