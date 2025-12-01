@@ -7,7 +7,7 @@ import GoalRoutes from "./goal.routes.js";
 import NoteRoutes from "./note.routes.js";
 import WorkoutRoutes from "./workout.routes.js";
 import WorkoutExerciseRoutes from "./workoutExercise.routes.js";
-
+import CoachAthlete from "./coachAthlete.routes.js";
 const router = Router();
 
 router.use((req, res, next) => {
@@ -24,5 +24,6 @@ router.use("/goals", GoalRoutes);
 router.use("/notes", NoteRoutes);
 router.use("/workouts", WorkoutRoutes);
 router.use("/workoutExercises", WorkoutExerciseRoutes);
+router.use("/coachAthletes", CoachAthlete);
 
 export default router;
