@@ -1,4 +1,4 @@
-import "dotenv/config";
+import dbConfig from "./app/config/db.config.js";
 import router from "./app/routes/index.js";
 import express from "express";
 import cors from "cors";
@@ -18,10 +18,8 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/tracker-t6", router);
 
-console.log("$$$$ ENV: " + process.env.PORT);
-
 // set port, listen for requests
-const PORT = process.env.PORT || 3100;
+const PORT = dbConfig.PORT || 3100;
 if (process.env.NODE_ENV !== "test") {
     app.listen(PORT, "0.0.0.0", () => {
         console.log(`Server is running on port ${PORT}.`);
