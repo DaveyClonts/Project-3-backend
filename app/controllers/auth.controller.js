@@ -382,10 +382,10 @@ export default {
             });
     },
     authorize: async (req, res) => {
-        let user = {};
+        let user = req.body;
         let databaseUser = {};
 
-        await findUserByID(req.body.id)
+        await findUserByID(user.id)
             .then((googleUser) => (databaseUser = googleUser))
             .catch((err) => {
                 console.log(`Failed to find User: ${err.message}.`);
@@ -402,6 +402,8 @@ export default {
         } else if (databaseUser.role !== user.role) {
             console.log("User role is desynced!");
             res.status(500).send({ message: "User role is desynced." });
+
+            return;
         }
 
         user = databaseUser;
