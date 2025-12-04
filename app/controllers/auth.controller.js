@@ -383,9 +383,10 @@ export default {
     },
     authorize: async (req, res) => {
         let user = {};
+        let databaseUser = {};
 
         await findUserByID(req.body.id)
-            .then((googleUser) => (user = googleUser))
+            .then((googleUser) => (databaseUser = googleUser))
             .catch((err) => {
                 console.log(`Failed to find User: ${err.message}.`);
                 res.status(500).send({
@@ -393,12 +394,17 @@ export default {
                 });
             });
 
-        if (user.id === undefined) {
+        if (databaseUser.id === undefined) {
             console.log("Failed to find User.");
             res.status(500).send({ message: `Failed to find User.` });
 
             return;
+        } else if (databaseUser.role !== user.role) {
+            console.log("User role is desynced!");
+            res.status(500).send({ message: "User role is desynced." });
         }
+
+        user = databaseUser;
 
         await updateGoogleToken(user)
             .then((isValid) => {
