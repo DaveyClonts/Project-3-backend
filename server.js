@@ -1,4 +1,4 @@
-import 'dotenv/config';
+import "dotenv/config";
 import router from "./app/routes/index.js";
 import express from "express";
 import cors from "cors";
@@ -17,6 +17,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/tracker-t6", router);
+
+console.log("$$$$ ENV: " + process.env.PORT);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 3100;
