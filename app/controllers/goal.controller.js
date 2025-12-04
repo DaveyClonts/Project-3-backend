@@ -66,7 +66,7 @@ export default {
         const id = req.params.id;
 
         SQLGoal.update(req.body, {
-            where: { goalID: id },
+            where: { id: id },
         })
             .then((num) => {
                 if (num == 1) {
