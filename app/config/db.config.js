@@ -7,8 +7,6 @@ const db_user = process.env.DB_USER;
 const db_name = process.env.DB_NAME;
 const db_port = process.env.PORT;
 
-console.log("DB CONFIG: " + db_port);
-
 const dbConfig = {
   HOST: db_host,
   USER: db_user,
