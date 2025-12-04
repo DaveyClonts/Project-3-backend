@@ -90,7 +90,7 @@ export default {
         const id = req.params.id;
 
         SQLGoal.destroy({
-            where: { goalID: id },
+            where: { id: id },
         })
             .then((num) => {
                 if (num == 1) {
